@@ -43,15 +43,15 @@ print("Right: " + str(right.isOpened()))
 print('Read calibration data and rectifying stereo pair...')
 calibration = StereoCalibration(input_folder='calib_result')
 
-cv.namedWindow("Image")
-cv.moveWindow("Image", 50,100)
-cv.namedWindow("left")
-cv.moveWindow("left", 450,100)
-cv.namedWindow("right")
-cv.moveWindow("right", 850,100)
+#cv.namedWindow("Image")
+#cv.moveWindow("Image", 50,100)
+#cv.namedWindow("left")
+#cv.moveWindow("left", 450,100)
+#cv.namedWindow("right")
+#cv.moveWindow("right", 850,100)
 
 disparity = np.zeros((img_width, img_height), np.uint8)
-sbm = cv.StereoBM_create(numDisparities=0, blockSize=21)
+sbm = cv.StereoBM_create(numDisparities=16, blockSize=9)  #(numDisparities=0, blockSize=21)
 
 def stereo_depth_map(rectified_pair):
     dmLeft = rectified_pair[0]
@@ -112,10 +112,17 @@ while True:
     r_img_resized = cv.cvtColor(r_img_resized, cv.COLOR_BGR2GRAY)
 
     rectified_pair = calibration.rectify((l_img_resized, r_img_resized))
-    disparity = stereo_depth_map(rectified_pair)
+    disparity = sbm.compute(rectified_pair[0], rectified_pair[1])
 
-    cv.imshow("left", l_img_resized)
-    cv.imshow("right", r_img_resized)
+    local_max = disparity.max()
+    local_min = disparity.min()
+    print("max: " + str(local_max) + " min: " + str(local_min))
+
+    cv.imshow("disp", disparity)
+    #disparity = stereo_depth_map(rectified_pair)
+
+    #cv.imshow("left", l_img_resized)
+    #cv.imshow("right", r_img_resized)
 
     if cv.waitKey(1) == 27:
         break

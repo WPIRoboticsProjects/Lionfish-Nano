@@ -1,7 +1,7 @@
 import cv2 as cv
 import time
 
-num_photos = 31
+num_photos = 22
 countdown = 5
 cam_width = 1920
 cam_height = 1080
@@ -42,8 +42,8 @@ while counter < num_photos:
     l_img_resized = cv.resize(l_img, (img_width, img_height), interpolation = cv.INTER_AREA)
     r_img_resized = cv.resize(r_img, (img_width, img_height), interpolation = cv.INTER_AREA)
     
-    left_name = "./calibration_photos/left/" + str(counter-1) + ".png"
-    right_name = "./calibration_photos/right/" + str(counter-1) + ".png"
+    left_name = "./calibration_photos_14/left/" + str(counter-2) + ".png"
+    right_name = "./calibration_photos_14/right/" + str(counter-2) + ".png"
     
     cv.imwrite(left_name, l_img_resized)
     cv.imwrite(right_name, r_img_resized)

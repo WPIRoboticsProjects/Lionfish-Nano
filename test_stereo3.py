@@ -34,9 +34,11 @@ calibration = StereoCalibration(input_folder='calib_result')
 def remap_img(img, side):
     h, w = img.shape[:2]
     newcameramtx, roi = cv.getOptimalNewCameraMatrix(calibration.cam_mats[side], calibration.dist_coefs[side], (w,h), 1, (w,h))
+
+   cv.stereoRectify(calibration.cam_mats["left"], calibration.dist_coefs["left"], calibration.cam_mats["right"], calibration.dist_coefs["right"], (w,h), calibration.rot_mat, calibration.trans_vec, flags=0)
+
     mapx, mapy = cv.initUndistortRectifyMap(calibration.cam_mats[side], calibration.dist_coefs[side], None, newcameramtx, (w,h), 5)
     dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
-    #dst = cv.remap(img, calibration.undistortion_map[side], calibration.rectification_map[side], cv.INTER_NEAREST)
 
     #x,y,w,h = roi
     #dst = dst[y:y+h, x:x+w]

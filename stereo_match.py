@@ -41,18 +41,20 @@ right = cv.VideoCapture(right_device)
 #    speckleRange = 32
 #)
 
-window_size = 4
-min_disp = 32#-64 #16
-num_disp = 112-min_disp
+window_size = 25#4
+min_disp = 0#16 #32#-64 #16
+#num_disp = 112-min_disp
+#num_disp = 128-min_disp
+num_disp = 144-min_disp
 stereo = cv.StereoSGBM_create(minDisparity = min_disp,
-    numDisparities = num_disp,
-    blockSize = 9, # 16
+    numDisparities = 128,#num_disp,
+    blockSize = 1, #5, #7, #9, # 16
     P1 = 8*3*window_size**2,
     P2 = 32*3*window_size**2,
-    disp12MaxDiff = 1,
+    disp12MaxDiff = 7, #10, #1,
     uniquenessRatio = 10,
-    speckleWindowSize = 100,
-    speckleRange = 32
+    speckleWindowSize = 150, #100,
+    speckleRange = 9 #32
 )
 
 def main():
@@ -82,14 +84,20 @@ def main():
     #write_ply(out_fn, out_points, out_colors)
     #print('%s saved' % out_fn)
 
-        cv.imshow('left', imgL)
-        cv.imshow('right', imgR)
+        #cv.imshow('left', imgL)
+        #cv.imshow('right', imgR)
         cv.imshow('disparity', (disp-min_disp)/num_disp)
 
-        y_center = int(norm_img.shape[0]/2)
-        x_center = int(norm_img.shape[1]/2)
-
-        print(norm_img.item((y_center, x_center)))
+        y_center = int(disp.shape[0]/2)
+        x_center = int(disp.shape[1]/2)
+        #y_center = int(norm_img.shape[0]/2)
+        #x_center = int(norm_img.shape[1]/2)
+        calc_disp = disp.item((y_center, x_center))
+        if calc_disp > 35:
+             depth_mm = 1074.99 / (calc_disp * 6)
+             depth_m = depth_mm * 1000
+             print("disp: " + str(calc_disp) + "  depth mm: " + str(depth_mm) + "  depth m: " + str(depth_m))
+             
         #depth = 29.7 / 
 
 

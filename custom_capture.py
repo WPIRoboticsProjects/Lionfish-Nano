@@ -10,8 +10,9 @@ def cam_thread(cam):
             break
 
 counter = 0
-num_photos = 20
-camera = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.1:1.0-video-index0"
+num_photos = 5
+# camera = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.1:1.0-video-index0"
+camera = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"
 
 cam = cv.VideoCapture(camera)
 print("Camera: " + str(cam.isOpened()))
@@ -21,7 +22,7 @@ x.start()
 while counter < num_photos:
     input("Next image: ")
     val, img = cam.read()
-    name = "./calibration_photos_water/left/" + str(counter) + ".png"
+    name = "./calibration_photos_water/right/" + str(counter) + ".png"
     cv.imwrite(name, img)
     print("Image " + str(counter) + " saved")
     counter += 1

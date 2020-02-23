@@ -106,6 +106,13 @@ stereo = cv.StereoSGBM_create(minDisparity = min_disp,
     speckleRange = 9 #32
 )
 
+right_matcher = cv.ximgproc.createRightMatcher(stereo)
+
+# FILTER Parameters
+lmbda = 80000
+sigma = 1.2
+visual_multiplier = 1.0
+
 while True:
     val, l_img = left.read()
     val2, r_img = right.read()
@@ -120,10 +127,27 @@ while True:
     dst_l = cv.remap(frameLeftNew, mapx_l, mapy_l, cv.INTER_LINEAR)
     dst_r = cv.remap(frameRightNew, mapx_r, mapy_r, cv.INTER_LINEAR)
 
-    disparity = stereo.compute(dst_l, dst_r).astype(np.float32) / 16.0
+    # disparity = stereo.compute(dst_l, dst_r).astype(np.float32) / 16.0
+    displ = stereo.compute(dst_l, dst_r)
+    dispr = stereo.compute(dst_r, dst_l)
 
-    cv.filterSpeckles(disparity, 0, 6000, 128)
-    cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
+    #cv.filterSpeckles(disparity, 0, 6000, 128)
+    displ = np.int16(displ)
+    dispr = np.int16(dispr)
+
+    wls_filter = cv.ximgproc.createDisparityWLSFilter(matcher_left=stereo)
+    wls_filter.setLambda(lmbda)
+    wls_filter.setSigmaColor(sigma)
+
+    filteredImg = wls_filter.filter(displ, dst_l, None, dispr)
+
+    filteredImg = cv.normalize(src=filteredImg, dst=filteredImg, beta=0, alpha=255, norm_type=cv.NORM_MINMAX)
+    filteredImg = np.uint8(filteredImg)
+    cv.imshow('Disparity Map', filteredImg)
+
+    # cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
+    #cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
+
 
 
 left.release()

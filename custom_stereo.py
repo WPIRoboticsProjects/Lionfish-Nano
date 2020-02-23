@@ -73,9 +73,9 @@ for fname in images:
 
 cv.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints_r, imgpoints_r, gray.shape[::-1],None,None)
-left = cv.VideoCapture(left_device)
-l_val, l_img = left.read()
-h,  w = l_img.shape[:2]
+right = cv.VideoCapture(right_device)
+r_val, r_img = left.read()
+h,  w = r_img.shape[:2]
 newcameramtx_r, roi_r = cv.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # undistort
 mapx_r, mapy_r = cv.initUndistortRectifyMap(mtx,dist,None,newcameramtx_r,(w,h),5)

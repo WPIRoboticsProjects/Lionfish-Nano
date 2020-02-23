@@ -1,4 +1,5 @@
 import cv2 as cv
+import keyboard
 
 num_photos = 20
 
@@ -8,16 +9,18 @@ cam = cv.VideoCapture(camera)
 print("Camera: " + str(cam.isOpened()))
 
 counter = 0
+
 while counter < num_photos:
     val, img = cam.read()
     cv.imshow("cam", img)
     if cv.waitKey(1) == 27:
         break
 
-    name = "./calibration_photos_water/left/" + str(counter - 2) + ".png"
-    cv.imwrite(name, img)
-    print("Image " + str(counter) + " saved")
-    counter += 1
+    if keyboard.read_key() == "s":
+        name = "./calibration_photos_water/left/" + str(counter) + ".png"
+        cv.imwrite(name, img)
+        print("Image " + str(counter) + " saved")
+        counter += 1
 
 
 cam.release()

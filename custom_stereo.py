@@ -5,6 +5,12 @@ import glob
 left_device = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.1:1.0-video-index0"
 right_device = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"
 
+left = cv.VideoCapture(left_device)
+right = cv.VideoCapture(right_device)
+
+print("Left: " + str(left.isOpened()))
+print("Right: " + str(right.isOpened()))
+
 #---------------------------------------------------
 # Calibration
 
@@ -38,12 +44,11 @@ for fname in images:
         # Draw and display the corners
         img = cv.drawChessboardCorners(img, (9,6), corners2,ret)
         # cv.imshow('img', img)
-        cv.waitKey(500)
+        #cv.waitKey(500)
 
 cv.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints_l, imgpoints_l, gray.shape[::-1],None,None)
-left = cv.VideoCapture(left_device)
-l_val, l_img = left.read()
+l_val, l_img = cv.pyrDown(left.read())
 h,  w = l_img.shape[:2]
 newcameramtx_l, roi_l = cv.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # undistort
@@ -69,12 +74,12 @@ for fname in images:
         # Draw and display the corners
         img = cv.drawChessboardCorners(img, (9,6), corners2,ret)
         # cv.imshow('img', img)
-        cv.waitKey(500)
+        #cv.waitKey(500)
 
 cv.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints_r, imgpoints_r, gray.shape[::-1],None,None)
-right = cv.VideoCapture(right_device)
-r_val, r_img = left.read()
+
+r_val, r_img = cv.pyrDown(right.read())
 h,  w = r_img.shape[:2]
 newcameramtx_r, roi_r = cv.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # undistort
@@ -83,11 +88,7 @@ mapx_r, mapy_r = cv.initUndistortRectifyMap(mtx,dist,None,newcameramtx_r,(w,h),5
 
 #----------------------------------------------------
 # show disparity
-left = cv.VideoCapture(left_device)
-right = cv.VideoCapture(right_device)
 
-print("Left: " + str(left.isOpened()))
-print("Right: " + str(right.isOpened()))
 
 window_size = 25#4
 min_disp = 0#16 #32#-64 #16
@@ -109,7 +110,7 @@ while True:
     val, l_img = left.read()
     val2, r_img = right.read()
     if cv.waitKey(1) == 27:
-        exit()
+        break
     imgL = cv.pyrDown(l_img)
     imgR = cv.pyrDown(r_img)
 
@@ -123,9 +124,6 @@ while True:
 
     cv.filterSpeckles(disparity, 0, 6000, 128)
     cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
-
-    if cv.waitKey(1) == 27:
-        break
 
 
 left.release()

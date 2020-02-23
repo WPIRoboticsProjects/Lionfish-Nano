@@ -48,8 +48,8 @@ for fname in images:
 
 cv.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints_l, imgpoints_l, gray.shape[::-1],None,None)
-l_val, l_img = cv.pyrDown(left.read())
-h,  w = l_img.shape[:2]
+l_val, l_img = left.read()
+h,  w = cv.pyrDown(l_img).shape[:2]
 newcameramtx_l, roi_l = cv.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # undistort
 mapx_l,mapy_l = cv.initUndistortRectifyMap(mtx,dist,None,newcameramtx_l,(w,h),5)
@@ -79,8 +79,8 @@ for fname in images:
 cv.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints_r, imgpoints_r, gray.shape[::-1],None,None)
 
-r_val, r_img = cv.pyrDown(right.read())
-h,  w = r_img.shape[:2]
+r_val, r_img = right.read()
+h,  w = cv.pyrDown(r_img).shape[:2]
 newcameramtx_r, roi_r = cv.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # undistort
 mapx_r, mapy_r = cv.initUndistortRectifyMap(mtx,dist,None,newcameramtx_r,(w,h),5)

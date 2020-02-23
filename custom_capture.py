@@ -1,19 +1,8 @@
 import cv2 as cv
 import threading
-import keyboard
 
-class KeyboardThread(threading.Thread):
 
-    def __init__(self, input_cbk = None, name='keyboard-input-thread'):
-        self.input_cbk = input_cbk
-        super(KeyboardThread, self).__init__(name=name)
-        self.start()
-
-    def run(self):
-        while True:
-            self.input_cbk(input()) #waits to get input + Return
-
-def my_callback(inp):
+def cam_thread(cam):
     while True:
         val, img = cam.read()
         cv.imshow("cam", img)
@@ -27,7 +16,8 @@ camera = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.1:1.0-video-index0"
 cam = cv.VideoCapture(camera)
 print("Camera: " + str(cam.isOpened()))
 
-kthread = KeyboardThread(my_callback)
+x = threading.Thread(target=cam_thread, args=(1, cam))
+x.start()
 while counter < num_photos:
     input("Next image: ")
     val, img = cam.read()

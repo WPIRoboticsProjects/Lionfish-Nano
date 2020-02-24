@@ -90,21 +90,36 @@ mapx_r, mapy_r = cv.initUndistortRectifyMap(mtx,dist,None,newcameramtx_r,(w,h),5
 # show disparity
 
 
-window_size = 25#4
-min_disp = 0#16 #32#-64 #16
+#window_size = 25#4
+#min_disp = 0#16 #32#-64 #16
 #num_disp = 112-min_disp
 #num_disp = 128-min_disp
-num_disp = 144-min_disp
-stereo = cv.StereoSGBM_create(minDisparity = min_disp,
-    numDisparities = 128,#num_disp,
-    blockSize = 1, #5, #7, #9, # 16
-    P1 = 8*3*window_size**2,
-    P2 = 32*3*window_size**2,
-    disp12MaxDiff = 7, #10, #1,
-    uniquenessRatio = 10,
-    speckleWindowSize = 150, #100,
-    speckleRange = 9 #32
+#num_disp = 144-min_disp
+#stereo = cv.StereoSGBM_create(
+#    minDisparity = 0, #min_disp
+#    numDisparities = 96, #128, #num_disp,
+#    blockSize = 5, #1, #5, #7, #9, # 16
+#    P1 = 0, #8*3*window_size**2,
+#    P2 = 0, #960, #32*3*window_size**2,
+#    disp12MaxDiff = 83, #30, #7, #10, #1,
+#    uniquenessRatio = 0, #10,
+#    speckleWindowSize = 0, #100,
+#    speckleRange = 0 #9 #32
+#)
+
+
+stereo = cv.StereoSGBM_create(
+    minDisparity = 0, #min_disp
+    numDisparities = 96, #128, #num_disp,
+    blockSize = 1, #1, #5, #7, #9, # 16
+    P1 = 100, #8*3*window_size**2,
+    P2 = 800, #960, #32*3*window_size**2,
+    disp12MaxDiff = 60, #83, #30, #7, #10, #1,
+    uniquenessRatio = 0, #3, #10,
+    speckleWindowSize = 0, #100,
+    speckleRange = 0 #9 #32
 )
+
 
 while True:
     val, l_img = left.read()
@@ -124,7 +139,7 @@ while True:
 
 
     # cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
-    cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
+    cv.imshow("Normalized Disparity", (disparity - 0) / 128)
 
 
 

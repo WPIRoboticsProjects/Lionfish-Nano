@@ -5,9 +5,9 @@ import threading
 def cam_thread(cam_l, cam_r):
     while True:
         val, img1 = cam_l.read()
-        cv.imshow("cam", cv.pyrDown(img_l))
+        cv.imshow("cam", cv.pyrDown(img1))
         val2, img2 = cam_r.read()
-        cv.imshow("cam", cv.pyrDown(img_r))
+        cv.imshow("cam2", cv.pyrDown(img2))
         if cv.waitKey(1) == 27:
             break
 
@@ -27,8 +27,8 @@ input("capture image: ")
 val, img_l = cam_l.read()
 val2, img_r = cam_r.read()
 
-cv.imwrite("left_img.png", img_l)
-cv.imwrite("right_img.png", img_r)
+cv.imwrite("left_img_s.png", cv.pyrDown(img_l))
+cv.imwrite("right_img_s.png", cv.pyrDown(img_r))
 
 cam_l.release()
 cam_r.release()

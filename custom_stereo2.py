@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import cv2 as cv
 import glob
@@ -22,12 +23,17 @@ objpoints = [] # 3d point in real world space
 imgpoints_l = [] # 2d points in image plane.
 imgpoints_r = [] # 2d points in image plane.
 
-images_l = glob.glob('calibration_photos_stereo_test/left/*.png')
-images_r = glob.glob('calibration_photos_stereo_test/right/*.png')
+#images_l = glob.glob('calibration_photos_stereo_test/left/*.png')
+#images_r = glob.glob('calibration_photos_stereo_test/right/*.png')
+directory = 'calibration_photos_stereo_test/left/'
+directory2 = 'calibration_photos_stereo_test/right/'
+for filename in os.listdir(directory):
+    img_l = cv.imread(os.path.join(directory, filename))
+    img_r = cv.imread(os.path.join(directory2, filename))
 
-for i in range(0, len(images_l)):
-    img_l = cv.imread(images_l.index(i))
-    img_r = cv.imread(images_r.index(i))
+#for i in range(0, len(images_l)):
+#    img_l = cv.imread(images_l.pop(i))
+#    img_r = cv.imread(images_r.pop(i))
     gray_l = cv.cvtColor(img_l, cv.COLOR_BGR2GRAY)
     gray_r = cv.cvtColor(img_r, cv.COLOR_BGR2GRAY)
 
@@ -88,18 +94,19 @@ rightMapX, rightMapY = cv.initUndistortRectifyMap(rightMatrix, rightDistortion, 
 #)
 
 
-stereo = cv.StereoSGBM_create(
-    minDisparity = 0, #min_disp
-    numDisparities = 96, #128, #num_disp,
-    blockSize = 1, #1, #5, #7, #9, # 16
-    P1 = 100, #8*3*window_size**2,
-    P2 = 800, #960, #32*3*window_size**2,
-    disp12MaxDiff = 60, #83, #30, #7, #10, #1,
-    uniquenessRatio = 0, #3, #10,
-    speckleWindowSize = 0, #100,
-    speckleRange = 0 #9 #32
-)
+#stereo = cv.StereoSGBM_create(
+#    minDisparity = 0, #min_disp
+#    numDisparities = 96, #128, #num_disp,
+#    blockSize = 1, #1, #5, #7, #9, # 16
+#    P1 = 100, #8*3*window_size**2,
+#    P2 = 800, #960, #32*3*window_size**2,
+#    disp12MaxDiff = 60, #83, #30, #7, #10, #1,
+#    uniquenessRatio = 0, #3, #10,
+#    speckleWindowSize = 0, #100,
+#    speckleRange = 0 #9 #32
+#)
 
+stereo = cv.StereoSGBM_create(0, 96, 18)
 
 while True:
     val, l_img = left.read()

@@ -12,7 +12,7 @@ def cam_thread(cam1, cam2):
             break
 
 counter = 0
-num_photos = 5
+num_photos = 7
 camera1 = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.1:1.0-video-index0"
 camera2 = "/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"
 
@@ -27,8 +27,8 @@ while counter < num_photos:
     input("Next image: ")
     val1, img1 = cam1.read()
     val2, img2 = cam2.read()
-    name1 = "calibration_photos_stereo_test/left/" + str(counter) + ".png"
-    name2 = "calibration_photos_stereo_test/right/" + str(counter) + ".png"
+    name1 = "calibration_photos_stereo_water_test/left/" + str(counter) + ".png"
+    name2 = "calibration_photos_stereo_water_test/right/" + str(counter) + ".png"
     cv.imwrite(name1, img1)
     cv.imwrite(name2, img2)
     print("Image " + str(counter) + " saved")

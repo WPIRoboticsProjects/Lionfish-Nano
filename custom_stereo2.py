@@ -53,9 +53,9 @@ for filename in os.listdir(directory):
         # Draw and display the corners
         img_l_show = cv.drawChessboardCorners(img_l, (9,6), corners2_l,ret_l)
         img_r_show = cv.drawChessboardCorners(img_r, (9, 6), corners2_r, ret_r)
-        cv.imshow('img_l', img_l_show)
-        cv.imshow('img_r', img_r_show)
-        cv.waitKey(500)
+        #cv.imshow('img_l', img_l_show)
+        #cv.imshow('img_r', img_r_show)
+        #cv.waitKey(500)
 
 cv.destroyAllWindows()
 
@@ -98,15 +98,40 @@ rightMapX, rightMapY = cv.initUndistortRectifyMap(rightMatrix, rightDistortion, 
 #    minDisparity = 0, #min_disp
 #    numDisparities = 96, #128, #num_disp,
 #    blockSize = 1, #1, #5, #7, #9, # 16
-#    P1 = 100, #8*3*window_size**2,
-#    P2 = 800, #960, #32*3*window_size**2,
-#    disp12MaxDiff = 60, #83, #30, #7, #10, #1,
+#    P1 = 0, #100, #8*3*window_size**2,
+#    P2 = 0, #800, #960, #32*3*window_size**2,
+#    disp12MaxDiff = 0, #60, #83, #30, #7, #10, #1,
 #    uniquenessRatio = 0, #3, #10,
 #    speckleWindowSize = 0, #100,
 #    speckleRange = 0 #9 #32
 #)
 
-stereo = cv.StereoSGBM_create(0, 96, 18)
+# pretty good values
+#stereo = cv.StereoSGBM_create(
+#    minDisparity = 0, #min_disp
+#    numDisparities = 128, #112, #128, #num_disp,
+#    blockSize = 1, #1, #5, #7, #9, # 16
+#    P1 = 10, #100, #8*3*window_size**2,
+#    P2 = 200, #800, #960, #32*3*window_size**2,
+#    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
+#    uniquenessRatio = 0, #3, #10,
+#    speckleWindowSize = 20, #100,
+#    speckleRange = 5 #9 #32
+#)
+
+stereo = cv.StereoSGBM_create(
+    minDisparity = 0, #min_disp
+    numDisparities = 128, #112, #128, #num_disp,
+    blockSize = 1, #1, #5, #7, #9, # 16
+    P1 = 10, #100, #8*3*window_size**2,
+    P2 = 200, #800, #960, #32*3*window_size**2,
+    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
+    uniquenessRatio = 0, #3, #10,
+    speckleWindowSize = 20, #100,
+    speckleRange = 5 #9 #32
+)
+
+#stereo = cv.StereoSGBM_create(0, 96, 18)
 
 while True:
     val, l_img = left.read()

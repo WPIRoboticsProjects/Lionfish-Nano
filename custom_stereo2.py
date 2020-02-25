@@ -151,10 +151,23 @@ while True:
 
     # cv.filterSpeckles(disparity, 0, 6000, 96)
     # cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 96);
-
-
+    #print(disparity.shape)
+    disparity = (disparity-0) / 128
+    out_val = disparity[120,240]
+    print(out_val)
+    # focal length = 2.97 mm
+    # baseline = 437 mm 
+    #calc_val = (437*2.97/3.0) / out_val
+    calc_val = (437.0 * 190.68) / out_val
+    print("disp: " + str(out_val) + " calc(mm): " + str(calc_val))
+    # (xmin,ymin),(xmax,ymax)
+    xmin = 235 #160 + 80 - 5
+    xmax = 245 #xmin + 10
+    ymin = 115 #120 - 5
+    ymax = 125 # ymin + 10
+    cv.rectangle(disparity, (xmin,ymin),(xmax,ymax), (255,255,255))
     # cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
-    cv.imshow("Normalized Disparity", (disparity - 0) / 128)
+    cv.imshow("Normalized Disparity", disparity)
 
 
 

@@ -4,6 +4,7 @@ import time
 from sys import exit
 import serial
 import signal
+from ProcessQueue import ProcessQueue
 import random
 import math
 
@@ -27,13 +28,27 @@ PING_CONF = 60
 startMarker = 60
 endMarker = 62
 
+def handler(signum, frame):
+    print('Handle Ctrl-C')
+    handle_exit()
+    exit()
+
+def handle_exit():
+    print("Exiting")
+    exit()
 
 if __name__=='__main__':
     signal.signal(signal.SIGINT, handler)
-    qToArduino = Queue()
-    qFromArduino = Queue()
+
+    process_queues = ProcessQueue()
+
 
     # Create the connection
-    master = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
+    mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     # Wait a heartbeat before sending commands
-    master.wait_heartbeat()
+    mavlink.wait_heartbeat()
+
+    #Start arduino Process
+    #start camera process,
+        # including object detection and tracking processes
+

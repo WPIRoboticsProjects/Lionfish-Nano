@@ -10,5 +10,6 @@ class TestComm(Process):
     def run(self):
         print("TESTCOMM")
         while True:
+            print(self.__queues.arduino_nav.qsize())
             message = self.__queues.arduino_nav.get()
             print(message)

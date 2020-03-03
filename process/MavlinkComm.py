@@ -13,6 +13,7 @@ class MavlinkComm(Process):
         while True:
             print("here")
             data = self.__mavlink.recv_match()
+            print('grabbed data')
             if not data:
                 continue
             if data.get_type() == 'VFR_HUD':

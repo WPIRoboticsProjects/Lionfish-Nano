@@ -2,6 +2,7 @@ from pymavlink import mavutil
 import sys
 import serial
 import signal
+from ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
 from ArduinoComm import ArduinoComm
@@ -11,6 +12,10 @@ from classes.ProcessQueue import ProcessQueue
 from classes.DriveObject import DriveObject
 from classes.DepthObject import DepthObject
 from classes.Arduino import Arduino
+from HarvesterControllerProcess import HarvesterControllerProcess
+from ArduinoComms import *
+import random
+import math
 
 # Pwm channel pins
 # 0 - pitch
@@ -47,64 +52,62 @@ if __name__=='__main__':
     serial_connection = serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     process_queues = ProcessQueue()
-    # depth_obj = DepthObject('', '')
-    # drive_obj = DriveObject('', '')
-    test_comm = TestComm(process_queues)
-    arduino_comm = ArduinoComm(arduino, process_queues)
-    # depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
-    # nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
-    # mavlink_comm = MavlinkComm(mavlink, process_queues)
-    # armed = False ## processes only run when armed
-    # mavlink_comm.start()
-    arduino_comm.start()
-    test_comm.start()
-    # while True:
-        # if armed:
-        #     cmd_message = input('Waiting For Command: ')
-        #     if cmd_message == 'disarm':
-        #         arm = False
-        #         depth_controller.terminate()
-        #         nav_controller.terminate()
-        #         print('**AUV Disarmed**')
-        #
-        #     # todo update messages that are passed to queues for
-        #     if cmd_message == 'depth' or cmd_message == 'bottom_hold':
-        #         depth = input('Depth: ')
-        #         msg = (cmd_message, depth)
-        #         process_queues.ui_depth.put(msg)
-        #     elif cmd_message == 'forward' or cmd_message == 'backward':
-        #         distance = input('Time: ') # or until near object/something
-        #         msg = (cmd_message, distance)
-        #         process_queues.ui_nav.put(msg)
-        #
-        #     elif cmd_message == 'roomba':
-        #         distance = input('Time: ') # or until near object/something
-        #         msg = (cmd_message, distance)
-        #         process_queues.ui_nav.put(msg)
-        #     elif cmd_message == 'run mission':
-        #         process_queues.ui_depth.put('bottom_hold 1.5')
-        #         process_queues.ui_nav.put('roomba 30 1 10000')
-        #     elif cmd_message == 'help':
-        #         print("arm - arm the motors")
-        #         print("disarm - disarm the motors")
-        #         print("yaw <0-100% throttle> <relative degrees> - turn robot")
-        #         print("forward <0-100% throttle> - drive forward for x seconds")
-        #         print("reverse <0-100% throttle> - drive reverse for x seconds")
-        #         print("roomba <0-100% throttle> - execute roomba search pattern for a given time")
-        #         print("depth <0-100% throttle> <target depth (m)> - dive to given depth")
-        #         print("bottomHold <0-100% throttle> <Distance from bottom(m)>")
-        #         print("q - quit the program")
-        #     elif cmd_message == 'quit' or cmd_message == 'q':
-        #         depth_controller.terminate()
-        #         nav_controller.terminate()
-        #         break
-        # else:
-        #     cmd_message = input('please arm the AUV')
-        #     if cmd_message == 'arm':
-        #         arm = True
-        #         depth_controller.start()
-        #         nav_controller.start()
-        #         print('**AUV Armed**')
+    depth_obj = DepthObject('', '')
+    drive_obj = DriveObject('', '')
+    armed = False ## processes only run when armed
+
+    while True:
+        if not armed:
+            cmd_message = input('please arm the AUV')
+            if cmd_message == 'arm':
+                arm = True
+                depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
+                nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
+                harv_controller = HarvesterControllerProcess(process_queues)
+                depth_controller.start()
+                nav_controller.start()
+                harv_controller.start()
+                print('**AUV Armed**')
+        else:
+            cmd_message = input('Waiting For Command: ')
+            if cmd_message == 'disarm':
+                arm = False
+                depth_controller.terminate()
+                nav_controller.terminate()
+                print('**AUV Disarmed**')
+            if cmd_message == 'depth' or cmd_message == 'bottom_hold':
+                depth = input('Depth: ')
+                msg = (cmd_message, depth)
+                process_queues.ui_depth.put(msg)
+            elif cmd_message == 'forward' or cmd_message == 'backward':
+                distance = input('Time: ') # or until near object/something
+                msg = (cmd_message, distance)
+                process_queues.ui_nav.put(msg)
+            elif cmd_message == 'yaw':
+                process_queues.ui_nav.put(cmd_message)
+            elif cmd_message == 'roomba':
+                distance = input('Time: ') # or until near object/something
+                msg = (cmd_message, distance)
+                process_queues.ui_nav.put(msg)
+            elif cmd_message == 'run mission':
+                process_queues.ui_depth.put('bottom_hold 1.5')
+                process_queues.ui_nav.put('roomba 30 1 10000')
+            elif cmd_message == 'help':
+                print("arm - arm the motors")
+                print("disarm - disarm the motors")
+                print("yaw <0-100% throttle> <relative degrees> - turn robot")
+                print("forward <0-100% throttle> - drive forward for x seconds")
+                print("reverse <0-100% throttle> - drive reverse for x seconds")
+                print("roomba <0-100% throttle> - execute roomba search pattern for a given time")
+                print("depth <0-100% throttle> <target depth (m)> - dive to given depth")
+                print("bottomHold <0-100% throttle> <Distance from bottom(m)>")
+                print("q - quit the program")
+            elif cmd_message == 'quit' or cmd_message == 'q':
+                depth_controller.terminate()
+                nav_controller.terminate()
+                harv_controller.start()
+                break
+
 
 
 

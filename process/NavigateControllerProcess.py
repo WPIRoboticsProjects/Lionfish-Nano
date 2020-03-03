@@ -29,9 +29,9 @@ class NavigateControllerProcess(Process):
             new_message = self.__queues.ui_nav.get()
             sensor_data = self.__queues.sensor_data.get()
 
-            # get most recent mavlink data
-            while self.__queues.mavlink_nav.qsize() != 0:
-                mavlink_data = self.__queues.mavlink_nav.get()
+            # todo: probably better to make a process that pulls mavlink data
+            #  and parses it into message queues
+            mavlink_data = self.__mavlink.recv_match()
 
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now

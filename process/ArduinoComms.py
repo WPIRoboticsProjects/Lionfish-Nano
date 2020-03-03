@@ -69,10 +69,15 @@ class ArduinoComms(Process):
             x = self.arduino.read()
 
         # save data until the end marker is found
-        while ord(x) != endMarker:
-            if ord(x) != startMarker:
-                ck = ck + x.decode("utf-8")
-                byteCount += 1
-            x = self.arduino.read()
+        try: 
+            while ord(x) != endMarker:
+                if ord(x) != startMarker:
+                    ck = ck + x.decode("utf-8")
+                    byteCount += 1
+                x = self.arduino.read()
+        
+        except:
+            print("serial Corruption Detected: setting message to default")
+            x = ""
 
         return x

@@ -55,7 +55,7 @@ if __name__=='__main__':
     # depth_obj = DepthObject('', '')
     # depth_controller = DepthControllerProcess(depth_obj, process_queues)
 
-    drive_obj = DriveObject('', '')
+    drive_obj = DriveObject(mavlink, TURN_BUFFER)
     nav_controller = NavigateControllerProcess(drive_obj, process_queues)
 
     harv_controller = HarvesterControllerProcess(process_queues)
@@ -88,9 +88,8 @@ if __name__=='__main__':
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth':
-                pass
-                # msg = (cmd_message, 0)
-                # process_queues.ui_depth.put(msg)
+                msg = (cmd_message, 0)
+                process_queues.ui_depth.put(msg)
             elif cmd_message == 'dive' or cmd_message == 'bottom_hold':
                 msg = (cmd_message, float(cmd_messages[1]))
                 process_queues.ui_depth.put(msg)

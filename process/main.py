@@ -82,6 +82,8 @@ if __name__=='__main__':
                 distance = input('Time: ') # or until near object/something
                 msg = (cmd_message, distance)
                 process_queues.ui_nav.put(msg)
+            elif cmd_message == 'yaw':
+                process_queues.ui_nav.put(cmd_message)
             elif cmd_message == 'roomba':
                 distance = input('Time: ') # or until near object/something
                 msg = (cmd_message, distance)

@@ -12,7 +12,7 @@ class MavlinkComm(Process):
 
         while True:
             data = self.__mavlink.recv_match()
-            message = data.data_to_dict()
+            message = data.to_dict()
 
             self.__queues.mavlink_nav.put(data)
             self.__queues.mavlink_depth.put(data)

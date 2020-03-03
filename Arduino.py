@@ -1,7 +1,10 @@
 import time
+import queue
 
 class Arduino:
-    def __init__(self):
+    def __init__(self, serial):
+        self.__serial = serial
+
         pass
 
     def check_sensors(self, q):

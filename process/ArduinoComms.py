@@ -1,17 +1,38 @@
 from multiprocessing import Process
 class ArduinoComms(Process):
 
-    def __init__(self, serial, queues):
-
-        self.serial = serial
+    def __init__(self, arduino, queues):
+        super(ArduinoComms, self).__init__()
+        self.arduino = arduino
         self.queues = queues
+        self.__stopped = False
 
-    def process_arduino_data(self, message, qFromArduino):
+    def stop(self):
+        print("stop")
+        self.terminate()
+
+    def run(self):
+
+        self.arduino
+
+        while True:
+            print(self.arduino)
+            if self.arduino.inWaiting() > 0:
+                try:
+                    dataRecvd = self.recv_from_arduino()
+                    # print("Reply Received  " + dataRecvd)
+                    self.process_arduino_data(dataRecvd)
+                except:
+                    # print("cannot read")
+                    pass
+
+    def process_arduino_data(self, message):
         recvMessage = message.split()
         messType = int(recvMessage[1])
         messId = int(recvMessage[2])
         messData = int(recvMessage[3])
         confData = int(recvMessage[4])
+
         # print("Type: " + str(messType) + ", id: " + str(messId) + ", data: " + str(messData))
         if messType == 0:
             if messId == 1:
@@ -45,26 +66,11 @@ class ArduinoComms(Process):
 
         # wait for the start character
         while ord(x) != startMarker:
-            x = self.serial.read()
+            x = self.arduino.read()
 
         # save data until the end marker is found
         while ord(x) != endMarker:
             if ord(x) != startMarker:
                 ck = ck + x.decode("utf-8")
                 byteCount += 1
-            x = self.serial.read()
-
-        return (ck)
-
-    def run(self):
-        ser = self.serial
-
-        while True:
-            if ser.inWaiting() > 0:
-                try:
-                    dataRecvd = self.recv_from_arduino()
-                    # print("Reply Received  " + dataRecvd)
-                    self.process_arduino_data(dataRecvd, self.queues.qFromArduino)
-                except:
-                    # print("cannot read")
-                    pass
+            x = self.arduino.read()

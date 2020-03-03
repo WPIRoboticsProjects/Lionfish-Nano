@@ -14,8 +14,8 @@ class MavlinkComm(Process):
             # print("here")
             data = self.__mavlink.recv_match()
             # print('/ data')
-            # if not data:
-            #     continue
+            if not data:
+                continue
             # if data.get_type() == 'VFR_HUD':
 
             message = data.to_dict()

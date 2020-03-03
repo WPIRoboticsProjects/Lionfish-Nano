@@ -7,11 +7,12 @@ import signal
 from ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
+from HarvesterControllerProcess import HarvesterControllerProcess
 from DriveObject import DriveObject
 from DepthObject import DepthObject
 
 from Arduino import Arduino
-from ArduinoComms import *
+from ArduinoComm import ArduinoComm
 
 import random
 import math
@@ -55,49 +56,77 @@ if __name__=='__main__':
     process_queues = ProcessQueue()
     depth_obj = DepthObject('', '')
     drive_obj = DriveObject('', '')
+    arduino_comm = ArduinoComm
     depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
     nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
+    harv_controller = HarvesterControllerProcess(process_queues)
     armed = False ## processes only run when armed
 
     while True:
-        if armed:
-            cmd_message = input('Waiting For Command: ')
+        if not armed:
+            input_message = input('please arm the AUV')
+            cmd_messages = input_message.split()
+            cmd_message = cmd_messages[0]
+
+            if cmd_message == 'arm':
+                arm = True
+
+                depth_controller.start()
+                nav_controller.start()
+                harv_controller.start()
+                print('**AUV Armed**')
+        else:
+            input_message = input('Waiting For Command: ')
+            cmd_messages = input_message.split()
+            cmd_message = cmd_messages[0]
+
             if cmd_message == 'disarm':
                 arm = False
                 depth_controller.terminate()
                 nav_controller.terminate()
                 print('**AUV Disarmed**')
-
-            # todo update messages that are passed to queues for
-            if cmd_message == 'depth' or cmd_message == 'bottom_hold':
-                depth = input('Depth: ')
-                msg = (cmd_message, depth)
+            if cmd_message == 'depth':
+                msg = (cmd_message, 0)
                 process_queues.ui_depth.put(msg)
-            elif cmd_message == 'forward' or cmd_message == 'backward':
-                distance = input('Time: ') # or until near object/something
-                msg = (cmd_message, distance)
+            elif cmd_message == 'dive' or cmd_message == 'bottom_hold':
+                msg = (cmd_message, float(cmd_messages[1]))
+                process_queues.ui_depth.put(msg)
+            elif cmd_message == 'forward':
+                msg = ("straight", int(cmd_messages[1]), 1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
-                
+            elif cmd_message == 'backward':
+                msg = ("straight", int(cmd_messages[1]), -1, float(cmd_messages[2]))
+                process_queues.ui_nav.put(msg)
+            elif cmd_message == 'yaw':
+                dir = 1
+                if float(cmd_messages[2]) < 0:
+                    dir = -1
+                msg = (cmd_messages, int(cmd_messages[1]), dir, abs(float(cmd_messages[2])))
+                process_queues.ui_nav.put(msg)
             elif cmd_message == 'roomba':
-                distance = input('Time: ') # or until near object/something
-                msg = (cmd_message, distance)
+                msg = (cmd_messages, float(cmd_messages[1]), 1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
             elif cmd_message == 'run mission':
-                process_queues.ui_depth.put('bottom_hold 1.5')
-                process_queues.ui_nav.put('roomba 30 1 10000')
+                depth_msg = ("bottom_hold", float(1.5))
+                nav_msg = ("roomba", float(30), 1, float(10000))
+                process_queues.ui_depth.put(depth_msg)
+                process_queues.ui_nav.put(nav_msg)
             elif cmd_message == 'help':
                 print("arm - arm the motors")
                 print("disarm - disarm the motors")
                 print("yaw <0-100% throttle> <relative degrees> - turn robot")
-                print("forward <0-100% throttle> - drive forward for x seconds")
-                print("reverse <0-100% throttle> - drive reverse for x seconds")
-                print("roomba <0-100% throttle> - execute roomba search pattern for a given time")
-                print("depth <0-100% throttle> <target depth (m)> - dive to given depth")
+                print("forward <0-100% throttle> <time in seconds> - drive forward for x seconds")
+                print("reverse <0-100% throttle> <time in seconds> - drive reverse for x seconds")
+                print("roomba <0-100% throttle> <time in seconds> - execute roomba search pattern for a given time")
+                print("depth - enable depth hold mode")
+                print("man - enable manual flight mode")
+                print("dive <target depth (m)> - dive to given depth")
                 print("bottomHold <0-100% throttle> <Distance from bottom(m)>")
                 print("q - quit the program")
             elif cmd_message == 'quit' or cmd_message == 'q':
                 depth_controller.terminate()
                 nav_controller.terminate()
+                harv_controller.start()
                 break
         else:
             cmd_message = input('please arm the AUV')
@@ -106,29 +135,3 @@ if __name__=='__main__':
                 depth_controller.start()
                 nav_controller.start()
                 print('**AUV Armed**')
-
-
-
-
-
-    # STATE SPACE::
-    # While scanning for lionfish
-        # Roomba process
-    # if see lionfish
-        # movre toward lionfish
-    # if emergence kill lionfish and roomba search
-    # if end of mission go home
-    # arduino_comm.start()
-    # print('here')
-    # time.sleep(10)
-    # arduino_comm.terminate()
-    # Create the connection
-    # mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
-    # Wait a heartbeat before sending commands
-    # mavlink.wait_heartbeat()
-
-
-    #Start arduino Process
-    #start camera process,
-        # including object detection and tracking processes
-

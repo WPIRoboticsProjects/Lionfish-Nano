@@ -57,7 +57,7 @@ class NavigateControllerProcess(Process):
                     last_message = new_message
                     state = 'stop'
 
-            elif state == 'turn':
+            elif state == 'yaw':
                 if not mavlink_data:
                     continue
                 elif mavlink_data.get_type() == 'VFR_HUD':

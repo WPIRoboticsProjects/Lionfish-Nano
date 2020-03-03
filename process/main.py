@@ -79,6 +79,9 @@ if __name__=='__main__':
                 distance = input('Time: ') # or until near object/something
                 msg = (cmd_message, distance)
                 process_queues.ui_nav.put(msg)
+            elif cmd_message == 'run mission':
+                process_queues.ui_depth.put('bottom_hold 1.5')
+                process_queues.ui_nav.put('roomba 30 1 10000')
             elif cmd_message == 'help':
                 print("arm - arm the motors")
                 print("disarm - disarm the motors")

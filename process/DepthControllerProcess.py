@@ -43,7 +43,7 @@ class DepthControllerProcess(Process):
                 else:#no need to adjust
                     pass
 
-            elif state == 'depth':
+            elif state == 'dive':
                 desired_depth = uiData
                 diff = altitude - desired_depth
                 if abs(diff) > buffer:

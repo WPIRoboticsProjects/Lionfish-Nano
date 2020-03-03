@@ -8,3 +8,8 @@ class TestComm(Process):
         self.__queues = queues
 
     def run(self):
+        print("TESTCOMM")
+        while True:
+            print(self.__queues.arduino_nav.qsize())
+            message = self.__queues.arduino_nav.get()
+            print(message)

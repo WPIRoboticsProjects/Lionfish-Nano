@@ -2,11 +2,10 @@ from multiprocessing import Process
 
 class DepthControllerProcess(Process):
 
-    def __init__(self, depth_obj, mavlink, queues):
+    def __init__(self, depth_obj, queues):
         super(DepthControllerProcess, self).__init__()
         self.__depth_obj = depth_obj
         self.__queues = queues
-        self.__mavlink = mavlink
 
     def run(self):
 
@@ -16,8 +15,8 @@ class DepthControllerProcess(Process):
             desired_depth = 0
             # message will be a tuple,
             # bottom_hold or depth, depth value
-            message = self.__queues.ui_depth.get()
-            sensors = self.__queues.sensor_data.get()
+            message = self.__queues.ui_depth.get_nowait()
+            arduino_data = self.__queues.arduino_depth.get_nowait()
             print(message)
             state = message[0]
             uiData = message[1] #depth => depth and bottom_hold => distance from bottom to hold

@@ -1,5 +1,5 @@
 from multiprocessing import Process
-
+import time
 class MavlinkComm(Process):
 
     def __init__(self, mavlink, queues):
@@ -11,8 +11,12 @@ class MavlinkComm(Process):
     def run(self):
 
         while True:
+            # print("here")
             data = self.__mavlink.recv_match()
-            message = data.data_to_dict()
-
-            self.__queues.mavlink_nav.put(data)
-            self.__queues.mavlink_depth.put(data)
+            # print('/ data')
+            if not data:
+                continue
+            if data.get_type() == 'VFR_HUD':
+                message = data.to_dict()
+                self.__queues.mavlink_nav.put(message['heading'])
+                self.__queues.mavlink_depth.put(message['alt'])

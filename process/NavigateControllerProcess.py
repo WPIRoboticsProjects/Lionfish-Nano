@@ -3,11 +3,10 @@ import time
 
 
 class NavigateControllerProcess(Process):
-    def __init__(self, nav_obj, mavlink, queues):
+    def __init__(self, nav_obj, queues):
         super(NavigateControllerProcess, self).__init__()
         self.__nav_obj = nav_obj
         self.__queues = queues
-        self.__mavlink = mavlink
 
     def run(self):
         minObjectDistance = 2000
@@ -20,31 +19,29 @@ class NavigateControllerProcess(Process):
         direction = 0
         desired_amount = 0
         roomba_state = 'straight'
+
         while True:
 
-            # todo: add in no wait if empty queues (prob in ProcessQueues class)
-            new_message = self.__queues.ui_nav.get()
-            sensor_data = self.__queues.sensor_data.get()
+            new_message = self.__queues.ui_nav.get_nowait()
 
-            # todo: probably better to make a process that pulls mavlink data
-            #  and parses it into message queues
-            mavlink_data = self.__mavlink.recv_match()
+            # todo checksafe to perseerve previous data if no data in queues
+            mavlink_data = self.__queues.mavlink_nav.get_nowait()
+            arduino_data = self.__queues.arduino_nav.get_nowait()
 
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now
-            if not last_message[0] == new_message[0]:
+            if not last_message[0] == new_message[0]: # update state if new message
                 state = new_message[0]
+                '''
+                    throtle:
+                    tuple for roomba mode
+                    index 0: straight
+                    index 1: turn
+                '''
                 throttle = new_message[1]
                 direction = new_message[2]
                 desired_amount = new_message[3]  # time or angle
-
-                if not mavlink_data:
-                    pass
-                elif mavlink_data.get_type() == 'VFR_HUD':
-                    original_heading = mavlink_data.to_dict()['heading']
-                else:
-                    pass
-
+                original_heading = mavlink_data
                 start_time = time.time()
 
             if state == 'straight':
@@ -57,13 +54,8 @@ class NavigateControllerProcess(Process):
                     last_message = new_message
                     state = 'stop'
 
-            elif state == 'yaw':
-                if not mavlink_data:
-                    continue
-                elif mavlink_data.get_type() == 'VFR_HUD':
-                    current_heading = mavlink_data.to_dict()['heading']
-                else:
-                    continue
+            elif state == 'turn':
+                current_heading = mavlink_data
                 desired_rel_angle = direction * desired_amount
                 if self.__nav_obj.continue_turn(original_heading, current_heading, desired_rel_angle):
                     self.__nav_obj.turn(throttle, desired_rel_angle)
@@ -74,21 +66,17 @@ class NavigateControllerProcess(Process):
 
             elif state == 'roomba':
                 if roomba_state == 'straight':
-                    if(sensor_data[0] > minObjectDistance):
-                        self.__nav_obj.drive_straight(throttle, 1)
+                    if(arduino_data[0] > minObjectDistance):
+                        self.__nav_obj.drive_straight(throttle[0], 1)
                     else:
+                        self.__nav_obj.clear_motors()
                         roomba_state = 'turn'
 
                 elif roomba_state == 'turn':
-                    if not mavlink_data:
-                        continue
-                    elif mavlink_data.get_type() == 'VFR_HUD':
-                        current_heading = mavlink_data.to_dict()['heading']
-                    else:
-                        continue
-
+                    current_heading = mavlink_data
+                    desired_rel_angle = direction * desired_amount
                     if(self.__nav_obj.continue_turn(original_heading, current_heading, 100)):
-                        self.__nav_obj.turn(throttle, desired_rel_angle)
+                        self.__nav_obj.turn(throttle[1], desired_amount)
                     else:
                         self.__nav_obj.clear_motors()
                         roomba_state = 'straight'

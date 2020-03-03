@@ -21,8 +21,6 @@ class NavigateControllerProcess(Process):
         desired_amount = 0
         roomba_state = 'straight'
 
-        while self.__queues.mavlink_nav.qsize() == 0:
-            pass
         mavlink_data = self.__queues.mavlink_nav.get()
 
         while True:
@@ -31,7 +29,8 @@ class NavigateControllerProcess(Process):
             new_message = self.__queues.ui_nav.get()
             sensor_data = self.__queues.sensor_data.get()
 
-            if self.__queues.mavlink_nav.qsize() != 0:
+            # get most recent mavlink data
+            while self.__queues.mavlink_nav.qsize() != 0:
                 mavlink_data = self.__queues.mavlink_nav.get()
 
             # todo: make better standard messages for cmd passing and such,

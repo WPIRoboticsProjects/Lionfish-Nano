@@ -1,5 +1,5 @@
 from multiprocessing import Process
-
+import time
 class MavlinkComm(Process):
 
     def __init__(self, mavlink, queues):
@@ -11,6 +11,7 @@ class MavlinkComm(Process):
     def run(self):
 
         while True:
+            print("here")
             data = self.__mavlink.recv_match()
             if not data:
                 continue
@@ -19,3 +20,4 @@ class MavlinkComm(Process):
 
                 self.__queues.mavlink_nav.put(message)
                 self.__queues.mavlink_depth.put(message)
+            time.sleep(2)

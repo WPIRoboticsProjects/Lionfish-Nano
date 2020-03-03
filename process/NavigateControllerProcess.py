@@ -10,6 +10,7 @@ class NavigateControllerProcess(Process):
         self.__mavlink = mavlink
 
     def run(self):
+        minObjectDistance = 2000
         start_time = time.time()
         last_message = ''
         current_heading = 0
@@ -18,6 +19,7 @@ class NavigateControllerProcess(Process):
         throttle = 0
         direction = 0
         desired_amount = 0
+        roomba_state = 'straight'
         while True:
 
             # todo: add in no wait if empty queues (prob in ProcessQueues class)
@@ -69,23 +71,31 @@ class NavigateControllerProcess(Process):
                     last_message = new_message
                     self.__nav_obj.clear_motors()
                     state = 'stop'
+
             elif state == 'roomba':
-                roomba_state = None
                 if roomba_state == 'straight':
-                    #todo drive straight IF no wall
-                    # else new roomba_state is turn
-                    pass
+                    if(sensor_data[0] > minObjectDistance):
+                        self.__nav_obj.drive_straight(throttle, 1)
+                    else:
+                        roomba_state = 'turn'
+
                 elif roomba_state == 'turn':
-                    # todo turn to angle
-                    #  else new roomba_state is straight
-                    pass
+                    if not mavlink_data:
+                        continue
+                    elif mavlink_data.get_type() == 'VFR_HUD':
+                        current_heading = mavlink_data.to_dict()['heading']
+                    else:
+                        continue
+
+                    if(self.__nav_obj.continue_turn(original_heading, current_heading, 100)):
+                        self.__nav_obj.turn(throttle, desired_rel_angle)
+                    else:
+                        self.__nav_obj.clear_motors()
+                        roomba_state = 'straight'
                 else:
                     pass
+            
             elif state == 'lionfish':
-                pass
-            elif state == 'home':
                 pass
             elif state == 'stop':
                 self.__nav_obj.clear_motors()
-
-

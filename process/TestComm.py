@@ -8,6 +8,6 @@ class TestComm(Process):
         self.__queues = queues
 
     def run(self):
-
+        print("TESTCOMM")
         message = self.__queues.mavlink_nav.get()
         print(message)

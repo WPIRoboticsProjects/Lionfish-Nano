@@ -1,0 +1,10 @@
+from multiprocessing import Process
+
+class TestComm(Process):
+
+    def __init__(self, queues):
+        super(TestComm, self).__init__()
+
+        self.__queues = queues
+
+    def run(self):

@@ -67,6 +67,8 @@ if __name__=='__main__':
                 depth_controller.terminate()
                 nav_controller.terminate()
                 print('**AUV Disarmed**')
+
+            # todo update messages that are passed to queues for
             if cmd_message == 'depth' or cmd_message == 'bottom_hold':
                 depth = input('Depth: ')
                 msg = (cmd_message, depth)
@@ -75,6 +77,7 @@ if __name__=='__main__':
                 distance = input('Time: ') # or until near object/something
                 msg = (cmd_message, distance)
                 process_queues.ui_nav.put(msg)
+                
             elif cmd_message == 'roomba':
                 distance = input('Time: ') # or until near object/something
                 msg = (cmd_message, distance)

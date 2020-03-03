@@ -4,6 +4,7 @@ import serial
 import signal
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
+from ArduinoComm import ArduinoComm
 from TestComm import TestComm
 from MavlinkComm import MavlinkComm
 from classes.ProcessQueue import ProcessQueue
@@ -28,8 +29,6 @@ PING_FORWARD_STOP = 2000
 PING_EXPIRE_TIME = 3 # seconds
 PING_CONF = 60
 
-startMarker = 60
-endMarker = 62
 
 def handler(signum, frame):
     print('Handle Ctrl-C')
@@ -45,17 +44,19 @@ if __name__=='__main__':
     mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     # Wait a heartbeat before sending commands
     mavlink.wait_heartbeat()
-    # serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
-    # arduino = Arduino(serial, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
+    serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
+    arduino = Arduino(serial, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     process_queues = ProcessQueue()
-    depth_obj = DepthObject('', '')
-    drive_obj = DriveObject('', '')
+    # depth_obj = DepthObject('', '')
+    # drive_obj = DriveObject('', '')
     test_comm = TestComm(process_queues)
-    depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
-    nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
-    mavlink_comm = MavlinkComm(mavlink, process_queues)
+    arduino_comm = ArduinoComm(arduino, process_queues)
+    # depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
+    # nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
+    # mavlink_comm = MavlinkComm(mavlink, process_queues)
     # armed = False ## processes only run when armed
-    mavlink_comm.start()
+    # mavlink_comm.start()
+    arduino_comm.start()
     test_comm.start()
     # while True:
         # if armed:

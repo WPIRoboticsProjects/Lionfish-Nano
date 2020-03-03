@@ -1,8 +1,8 @@
 from multiprocessing import Process
-class ArduinoComms(Process):
+class ArduinoComm(Process):
 
     def __init__(self, arduino, queues):
-        super(ArduinoComms, self).__init__()
+        super(ArduinoComm, self).__init__()
         self.__arduino = arduino
         self.__queues = queues
         self.__stopped = False

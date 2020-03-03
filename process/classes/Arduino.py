@@ -7,8 +7,8 @@ class Arduino:
         self.__forward_stop = forward_stop
         self.__expire_time = expire_time
         self.__conf = conf
-        self.__start_marker = '<'
-        self.__end_marker = '>'
+        self.__start_marker = 60
+        self.__end_marker = 62
 
         pass
 

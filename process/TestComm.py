@@ -11,4 +11,4 @@ class TestComm(Process):
         print("TESTCOMM")
         while True:
             message = self.__queues.mavlink_nav.get()
-            print(message)
+            # print(message)

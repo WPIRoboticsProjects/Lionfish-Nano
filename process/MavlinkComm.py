@@ -14,13 +14,13 @@ class MavlinkComm(Process):
             # print("here")
             data = self.__mavlink.recv_match()
             # print('/ data')
-            if not data:
-                continue
-            if data.get_type() == 'VFR_HUD':
+            # if not data:
+            #     continue
+            # if data.get_type() == 'VFR_HUD':
 
-                message = data.to_dict()
-                # print("MAVCOM: ", message)
-                self.__queues.mavlink_nav.put(message)
-
+            message = data.to_dict()
+            # print("MAVCOM: ", message)
+            self.__queues.mavlink_nav.put(message)
+            print(self.__queues.mavlink_nav.qsize())
                 # self.__queues.mavlink_depth.put(message)
             # time.sleep(2)

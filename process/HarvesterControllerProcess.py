@@ -26,8 +26,8 @@ class HarvesterControllerProcess(Process):
 
                 if state == 'arming':
                     self.__queues.toArduinoQ.put('1')# arm
-                    spearArmed = True
                     state = 'armed'
+                    spearArmed = True
 
                 elif state == 'Trying To Fire' and not spearArmed:
                     print('Arm Spear Before Firing')
@@ -43,5 +43,6 @@ class HarvesterControllerProcess(Process):
                 elif state == 'disarming':
                     self.__queues.toArduinoQ.put('0')# disarm
                     state = 'disarmed'
+                    spearArmed = False
             except:
                 pass

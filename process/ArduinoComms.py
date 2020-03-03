@@ -74,3 +74,5 @@ class ArduinoComms(Process):
                 ck = ck + x.decode("utf-8")
                 byteCount += 1
             x = self.arduino.read()
+
+        return x

@@ -55,12 +55,19 @@ if __name__=='__main__':
     process_queues = ProcessQueue()
     depth_obj = DepthObject('', '')
     drive_obj = DriveObject('', '')
-    depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
-    nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
     armed = False ## processes only run when armed
 
     while True:
-        if armed:
+        if not armed:
+            cmd_message = input('please arm the AUV')
+            if cmd_message == 'arm':
+                arm = True
+                depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
+                nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
+                depth_controller.start()
+                nav_controller.start()
+                print('**AUV Armed**')
+        else:
             cmd_message = input('Waiting For Command: ')
             if cmd_message == 'disarm':
                 arm = False
@@ -96,13 +103,7 @@ if __name__=='__main__':
                 depth_controller.terminate()
                 nav_controller.terminate()
                 break
-        else:
-            cmd_message = input('please arm the AUV')
-            if cmd_message == 'arm':
-                arm = True
-                depth_controller.start()
-                nav_controller.start()
-                print('**AUV Armed**')
+            
 
 
 

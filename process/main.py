@@ -1,22 +1,16 @@
 from pymavlink import mavutil
-from multiprocessing import Process, Queue
-import time
 from sys import exit
 import serial
 import signal
-from ProcessQueue import ProcessQueue
+from classes.ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
 from TestComm import TestComm
 from MavlinkComm import MavlinkComm
-from DriveObject import DriveObject
+from classes.DriveObject import DriveObject
 from DepthObject import DepthObject
 
-from Arduino import Arduino
-from ArduinoComms import *
-
-import random
-import math
+from classes.Arduino import Arduino
 
 # Pwm channel pins
 # 0 - pitch

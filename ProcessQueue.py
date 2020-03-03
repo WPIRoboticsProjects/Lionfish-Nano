@@ -13,4 +13,5 @@ class ProcessQueue:
         self.ui_nav = Queue()
         self.ui_depth = Queue()
         self.harv_comms = Queue()
+        self.toArduinoQ = Queue()
 

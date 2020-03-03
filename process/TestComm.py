@@ -9,7 +9,6 @@ class TestComm(Process):
 
     def run(self):
         print("TESTCOMM")
-        message = self.__queues.mavlink_nav.get_nowait()
-        if not message:
-            continue
-        print(message)
+        while True:
+            message = self.__queues.mavlink_nav.get()
+            print(message)

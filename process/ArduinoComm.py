@@ -7,12 +7,7 @@ class ArduinoComm(Process):
         self.__queues = queues
         self.__stopped = False
 
-    def stop(self):
-        print("stop")
-        self.terminate()
-
     def run(self):
-
 
         while True:
 
@@ -21,9 +16,9 @@ class ArduinoComm(Process):
 
             if self.__arduino.is_waiting() > 0:
                 try:
-                    dataRecvd = self.__arduino.recv_from_arduino()
+                    data = self.__arduino.recv_from_arduino()
                     # print("Reply Received  " + dataRecvd)
-                    self.__arduino.process_arduino_data(dataRecvd, self.__queues)
+                    self.__arduino.process_arduino_data(data, self.__queues)
                 except:
                     # print("cannot read")
                     pass

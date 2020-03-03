@@ -7,9 +7,9 @@ import signal
 from ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
+from HarvesterControllerProcess import HarvesterControllerProcess
 from DriveObject import DriveObject
 from DepthObject import DepthObject
-from HarvesterObject import HarvesterObject
 
 from Arduino import Arduino
 from ArduinoComms import *

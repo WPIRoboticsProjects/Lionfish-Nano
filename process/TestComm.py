@@ -10,5 +10,5 @@ class TestComm(Process):
     def run(self):
         print("TESTCOMM")
         while True:
-            message = self.__queues.mavlink_nav.get()
-            # print(message)
+            message = self.__queues.arduino_nav.get()
+            print(message)

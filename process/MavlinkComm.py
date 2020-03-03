@@ -16,11 +16,7 @@ class MavlinkComm(Process):
             # print('/ data')
             if not data:
                 continue
-            # if data.get_type() == 'VFR_HUD':
-
-            message = data.to_dict()
-            # print("MAVCOM: ", message)
-            self.__queues.mavlink_nav.put(message)
-            print(self.__queues.mavlink_nav.qsize())
-                # self.__queues.mavlink_depth.put(message)
-            # time.sleep(2)
+            if data.get_type() == 'VFR_HUD':
+                message = data.to_dict()
+                self.__queues.mavlink_nav.put(message['heading'])
+                self.__queues.mavlink_depth.put(message['alt'])

@@ -17,6 +17,12 @@ class ArduinoComms(Process):
 
         while True:
             print(self.arduino)
+            try:
+                message = self.queues.sendToArduino.get()
+                sendMSG(message)
+            except:
+                pass
+
             if self.arduino.inWaiting() > 0:
                 try:
                     dataRecvd = self.recv_from_arduino()
@@ -25,6 +31,14 @@ class ArduinoComms(Process):
                 except:
                     # print("cannot read")
                     pass
+
+    def sendMSG(self, message):
+        if type(message) == 'char':
+            self.arduino.serial.write(message).encode('utf-8')
+        else:
+            #wrong data type
+            pass
+
 
     def process_arduino_data(self, message):
         recvMessage = message.split()

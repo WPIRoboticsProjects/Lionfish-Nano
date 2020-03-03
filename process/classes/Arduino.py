@@ -63,6 +63,7 @@ class Arduino:
 
         # print("Type: " + str(messType) + ", id: " + str(messId) + ", data: " + str(messData))
         if messType == 0:
+            print("here")
             if messId == 1:
                 queues.arduino_nav.put((messData, confData))
             elif messId == 2:

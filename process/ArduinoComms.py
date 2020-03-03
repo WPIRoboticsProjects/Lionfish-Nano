@@ -92,6 +92,6 @@ class ArduinoComms(Process):
         
         except:
             print("serial Corruption Detected: setting message to default")
-            x = ""
+            ck = ""
 
-        return x
+        return ck

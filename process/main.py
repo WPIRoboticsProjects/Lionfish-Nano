@@ -1,15 +1,16 @@
 from pymavlink import mavutil
-from sys import exit
+import sys
 import serial
 import signal
-from classes.ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
 from TestComm import TestComm
 from MavlinkComm import MavlinkComm
-from classes.DriveObject import DriveObject
-from DepthObject import DepthObject
 
+sys.path.append('../')
+from classes.ProcessQueue import ProcessQueue
+from classes.DriveObject import DriveObject
+from classes.DepthObject import DepthObject
 from classes.Arduino import Arduino
 
 # Pwm channel pins

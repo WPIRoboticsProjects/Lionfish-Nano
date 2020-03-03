@@ -7,5 +7,6 @@ for all processed to access all needed queues
 '''
 class ProcessQueue:
     def __init__(self):
-        self.qToArduino = Queue()
-        self.qFromArduino = Queue()
+        self.sensor_data = Queue()
+        self.ui_nav = Queue()
+        self.ui_depth = Queue()

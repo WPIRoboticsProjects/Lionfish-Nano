@@ -2,8 +2,11 @@ import time
 import queue
 
 class Arduino:
-    def __init__(self, serial):
+    def __init__(self, serial, forward_stop, expire_time, conf):
         self.__serial = serial
+        self.__forward_stop = forward_stop
+        self.__expire_time = expire_time
+        self.__conf = conf
 
         pass
 
@@ -38,20 +41,22 @@ class Arduino:
                     ping2_conf = val[3]
         return ping1_val, ping1_time, ping1_conf, ping2_val, ping2_time, ping2_conf
 
-    def object_forward(ping):
-        if (ping < PING_FORWARD_STOP) and ping != -100:
+    def object_forward(self, ping):
+        if (ping < self.__forward_stop) and ping != -100:
             return True
         else:
             return False
 
-    def ping_expire(ping_time):
-        if (time.time() - ping_time) > PING_EXPIRE_TIME:
+    def ping_expire(self, ping_time):
+        if (time.time() - ping_time) > self.__expire_time:
             return True
         else:
             return False
 
-    def ping_conf(conf):
-        if conf > PING_CONF:
+    def ping_conf(self, conf):
+        if conf > self.__conf:
             return True
         else:
             return False
+
+

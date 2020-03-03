@@ -13,7 +13,7 @@ class ArduinoComms(Process):
 
     def run(self):
 
-        self.arduino
+        # self.arduino
 
         while True:
             print(self.arduino)

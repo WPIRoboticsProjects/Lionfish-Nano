@@ -5,6 +5,10 @@ from sys import exit
 import serial
 import signal
 from ProcessQueue import ProcessQueue
+from DepthControllerProcess import DepthControllerProcess
+from NavigateControllerProcess import NavigateControllerProcess
+from DriveObject import DriveObject
+
 from Arduino import Arduino
 from ArduinoComms import *
 
@@ -42,14 +46,36 @@ def handle_exit():
 
 if __name__=='__main__':
     signal.signal(signal.SIGINT, handler)
-
-    process_queues = ProcessQueue()
     mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     # Wait a heartbeat before sending commands
     mavlink.wait_heartbeat()
     serial = serial.Serial('COM3', 115200, timeout=0)
-    arduino = Arduino(serial)
-    arduino_comm = ArduinoComms(arduino, 'test')
+    arduino = Arduino(serial, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
+    process_queues = ProcessQueue()
+    depth_obj = DriveObject('', '')
+    drive_obj = DriveObject('', '')
+    depth_controller = DepthControllerProcess(depth_obj, process_queues)
+    nav_controller = NavigateControllerProcess(drive_obj, process_queues, mavlink)
+
+    depth_controller.start()
+    nav_controller.start()
+    while True:
+        cmd_message = input('test ')
+        if cmd_message == 'depth' or cmd_message == 'bottom_hold':
+            depth = input('Depth: ')
+            msg = (cmd_message, depth)
+            process_queues.ui_depth.put(msg)
+        elif cmd_message == 'forward' or cmd_message == 'backward':
+            distance = input('Time: ') # or until near object/something
+            msg = (cmd_message, distance)
+            process_queues.ui_nav.put(msg)
+        elif cmd_message == 'quit' or cmd_message == 'q':
+            depth_controller.terminate()
+            nav_controller.terminate()
+            break
+
+
+
 
 
     # STATE SPACE::
@@ -59,15 +85,14 @@ if __name__=='__main__':
         # movre toward lionfish
     # if emergence kill lionfish and roomba search
     # if end of mission go home
-    arduino_comm.start()
-    print('here')
-    time.sleep(10)
-    arduino_comm.terminate()
-    print("process_stopped")
+    # arduino_comm.start()
+    # print('here')
+    # time.sleep(10)
+    # arduino_comm.terminate()
     # Create the connection
-    mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
+    # mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     # Wait a heartbeat before sending commands
-    mavlink.wait_heartbeat()
+    # mavlink.wait_heartbeat()
 
 
     #Start arduino Process

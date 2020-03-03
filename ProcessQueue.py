@@ -8,5 +8,6 @@ for all processed to access all needed queues
 class ProcessQueue:
     def __init__(self):
         self.sensor_data = Queue()
-        self.ui_nav = Queue()
-        self.ui_depth = Queue()
+        self.mavlink_nav = Queue()
+        self.mavlink_depth = Queue()
+

@@ -21,5 +21,6 @@ class MavlinkComm(Process):
                 message = data.to_dict()
                 # print("MAVCOM: ", message)
                 self.__queues.mavlink_nav.put(message)
+
                 # self.__queues.mavlink_depth.put(message)
             # time.sleep(2)

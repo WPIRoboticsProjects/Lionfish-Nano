@@ -20,14 +20,18 @@ class NavigateControllerProcess(Process):
         desired_amount = 0
         roomba_state = 'straight'
         new_message = ''
+        mavlink_data = 0
+        arduino_data = 0
         while True:
-            if not self.__queues.ui_nav.Empty():
+            if not self.__queues.ui_nav.empty():
                 new_message = self.__queues.ui_nav.get_nowait()
             else:
                 pass
             # todo checksafe to perseerve previous data if no data in queues
-            mavlink_data = self.__queues.mavlink_nav.get_nowait()
-            arduino_data = self.__queues.arduino_nav.get_nowait()
+            if not self.__queues.mavlink_nav.empty():
+                mavlink_data = self.__queues.mavlink_nav.get_nowait()
+            else:
+                pass
 
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now

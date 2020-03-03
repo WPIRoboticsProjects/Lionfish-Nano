@@ -6,8 +6,6 @@ from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
 from TestComm import TestComm
 from MavlinkComm import MavlinkComm
-
-sys.path.append('../')
 from classes.ProcessQueue import ProcessQueue
 from classes.DriveObject import DriveObject
 from classes.DepthObject import DepthObject

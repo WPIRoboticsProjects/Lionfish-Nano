@@ -17,5 +17,5 @@ class MavlinkComm(Process):
             if data.get_type() == 'VFR_HUD':
                 message = data.to_dict()
 
-            self.__queues.mavlink_nav.put(message)
-            self.__queues.mavlink_depth.put(message)
+                self.__queues.mavlink_nav.put(message)
+                self.__queues.mavlink_depth.put(message)

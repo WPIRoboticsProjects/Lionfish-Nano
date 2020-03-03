@@ -19,71 +19,74 @@ class NavigateControllerProcess(Process):
         direction = 0
         desired_amount = 0
         roomba_state = 'straight'
-
+        new_message = ''
         while True:
             if not self.__queues.ui_nav.Empty():
                 new_message = self.__queues.ui_nav.get_nowait()
+            else:
+                pass
+            # todo checksafe to perseerve previous data if no data in queues
+            mavlink_data = self.__queues.mavlink_nav.get_nowait()
+            arduino_data = self.__queues.arduino_nav.get_nowait()
 
-                # todo checksafe to perseerve previous data if no data in queues
-                mavlink_data = self.__queues.mavlink_nav.get_nowait()
-                arduino_data = self.__queues.arduino_nav.get_nowait()
+            # todo: make better standard messages for cmd passing and such,
+            #  tuples for now
+            if not last_message[0] == new_message[0]: # update state if new message
+                state = new_message[0]
+                '''
+                    throtle:
+                    tuple for roomba mode
+                    index 0: straight
+                    index 1: turn
+                '''
+                throttle = new_message[1]
+                direction = new_message[2]
+                desired_amount = new_message[3]  # time or angle
+                original_heading = mavlink_data
+                start_time = time.time()
 
-                # todo: make better standard messages for cmd passing and such,
-                #  tuples for now
-                if not last_message[0] == new_message[0]: # update state if new message
-                    state = new_message[0]
-                    '''
-                        throtle:
-                        tuple for roomba mode
-                        index 0: straight
-                        index 1: turn
-                    '''
-                    throttle = new_message[1]
-                    direction = new_message[2]
-                    desired_amount = new_message[3]  # time or angle
-                    original_heading = mavlink_data
-                    start_time = time.time()
+            if state == 'straight':
+                current_time = time.time()
+                drive_time = current_time - start_time
+                if drive_time <= desired_amount:
+                    self.__nav_obj.drive_straight(throttle, direction)
+                else:
+                    self.__nav_obj.clear_motors()
+                    last_message = new_message
+                    state = 'stop'
 
-                if state == 'straight':
-                    current_time = time.time()
-                    drive_time = current_time - start_time
-                    if drive_time <= desired_amount:
-                        self.__nav_obj.drive_straight(throttle, direction)
+            elif state == 'turn':
+                current_heading = mavlink_data
+                desired_rel_angle = direction * desired_amount
+                if self.__nav_obj.continue_turn(original_heading, current_heading, desired_rel_angle):
+                    self.__nav_obj.turn(throttle, desired_rel_angle)
+                else:
+                    last_message = new_message
+                    self.__nav_obj.clear_motors()
+                    state = 'stop'
+
+            elif state == 'roomba':
+                if roomba_state == 'straight':
+                    if(arduino_data[0] > minObjectDistance):
+                        self.__nav_obj.drive_straight(throttle[0], 1)
                     else:
                         self.__nav_obj.clear_motors()
-                        last_message = new_message
-                        state = 'stop'
+                        roomba_state = 'turn'
 
-                elif state == 'turn':
+                elif roomba_state == 'turn':
                     current_heading = mavlink_data
                     desired_rel_angle = direction * desired_amount
-                    if self.__nav_obj.continue_turn(original_heading, current_heading, desired_rel_angle):
-                        self.__nav_obj.turn(throttle, desired_rel_angle)
+                    if(self.__nav_obj.continue_turn(original_heading, current_heading, 100)):
+                        self.__nav_obj.turn(throttle[1], desired_amount)
                     else:
-                        last_message = new_message
                         self.__nav_obj.clear_motors()
-                        state = 'stop'
-
-                elif state == 'roomba':
-                    if roomba_state == 'straight':
-                        if(arduino_data[0] > minObjectDistance):
-                            self.__nav_obj.drive_straight(throttle[0], 1)
-                        else:
-                            self.__nav_obj.clear_motors()
-                            roomba_state = 'turn'
-
-                    elif roomba_state == 'turn':
-                        current_heading = mavlink_data
-                        desired_rel_angle = direction * desired_amount
-                        if(self.__nav_obj.continue_turn(original_heading, current_heading, 100)):
-                            self.__nav_obj.turn(throttle[1], desired_amount)
-                        else:
-                            self.__nav_obj.clear_motors()
-                            roomba_state = 'straight'
-                    else:
-                        pass
-
-                elif state == 'lionfish':
+                        roomba_state = 'straight'
+                else:
                     pass
-                elif state == 'stop':
-                    self.__nav_obj.clear_motors()
+
+            elif state == 'lionfish':
+                pass
+            elif state == 'stop':
+                self.__nav_obj.clear_motors()
+            else:
+                pass

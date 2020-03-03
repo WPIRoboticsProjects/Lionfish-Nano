@@ -101,6 +101,7 @@ class Arduino:
                 ck = ck + x.decode("utf-8")
                 byteCount += 1
             x = self.__serial.read()
+        return x
 
     def object_forward(self, ping):
         if (ping < self.__forward_stop) and ping != -100:

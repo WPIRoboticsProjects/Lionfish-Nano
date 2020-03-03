@@ -52,8 +52,8 @@ if __name__=='__main__':
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)
 
-    depth_obj = DepthObject('', '')
-    depth_controller = DepthControllerProcess(depth_obj, process_queues)
+    # depth_obj = DepthObject('', '')
+    # depth_controller = DepthControllerProcess(depth_obj, process_queues)
 
     drive_obj = DriveObject('', '')
     nav_controller = NavigateControllerProcess(drive_obj, process_queues)
@@ -68,7 +68,7 @@ if __name__=='__main__':
             if cmd_message == 'arm':
                 arm = True
 
-                depth_controller.start()
+                # depth_controller.start()
                 nav_controller.start()
                 harv_controller.start()
                 print('**AUV Armed**')
@@ -79,7 +79,7 @@ if __name__=='__main__':
 
             if cmd_message == 'disarm':
                 arm = False
-                depth_controller.terminate()
+                # depth_controller.terminate()
                 nav_controller.terminate()
 
                 # todo clean up and make sure harvester is disarmed
@@ -88,21 +88,25 @@ if __name__=='__main__':
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth':
-                msg = (cmd_message, 0)
-                process_queues.ui_depth.put(msg)
+                pass
+                # msg = (cmd_message, 0)
+                # process_queues.ui_depth.put(msg)
             elif cmd_message == 'dive' or cmd_message == 'bottom_hold':
                 msg = (cmd_message, float(cmd_messages[1]))
                 process_queues.ui_depth.put(msg)
+
             elif cmd_message == 'forward':
                 msg = ("straight", int(cmd_messages[1]), 1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
+
             elif cmd_message == 'backward':
                 msg = ("straight", int(cmd_messages[1]), -1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
-            elif cmd_message == 'turn' or cmd_message == 'yaw':
 
+            elif cmd_message == 'turn' or cmd_message == 'yaw':
                 msg = ('turn', int(cmd_messages[1]), np.sign(int(cmd_messages[2])), abs(float(cmd_messages[2])))
                 process_queues.ui_nav.put(msg)
+
             # elif cmd_message == 'roomba':
             #     msg = (cmd_messages, float(cmd_messages[1]), 1, float(cmd_messages[2]))
             #     process_queues.ui_nav.put(msg)

@@ -12,4 +12,5 @@ class ProcessQueue:
         self.mavlink_depth = Queue()
         self.ui_nav = Queue()
         self.ui_depth = Queue()
+        self.harv_comms = Queue()
 

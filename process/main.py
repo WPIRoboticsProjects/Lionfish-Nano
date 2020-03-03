@@ -7,8 +7,10 @@ import signal
 from ProcessQueue import ProcessQueue
 from DepthControllerProcess import DepthControllerProcess
 from NavigateControllerProcess import NavigateControllerProcess
+from HarvesterControllerProcess import HarvesterControllerProcess
 from DriveObject import DriveObject
 from DepthObject import DepthObject
+from HarvesterObject import HarvesterObject
 
 from Arduino import Arduino
 from ArduinoComms import *
@@ -55,6 +57,7 @@ if __name__=='__main__':
     process_queues = ProcessQueue()
     depth_obj = DepthObject('', '')
     drive_obj = DriveObject('', '')
+    harv_obj = HarvesterObject('', '')
     armed = False ## processes only run when armed
 
     while True:
@@ -64,8 +67,10 @@ if __name__=='__main__':
                 arm = True
                 depth_controller = DepthControllerProcess(depth_obj, mavlink, process_queues)
                 nav_controller = NavigateControllerProcess(drive_obj, mavlink, process_queues)
+                harv_controller = HarvesterControllerProcess(harv_obj, process_queues)
                 depth_controller.start()
                 nav_controller.start()
+                harv_controller.start()
                 print('**AUV Armed**')
         else:
             cmd_message = input('Waiting For Command: ')
@@ -104,6 +109,7 @@ if __name__=='__main__':
             elif cmd_message == 'quit' or cmd_message == 'q':
                 depth_controller.terminate()
                 nav_controller.terminate()
+                harv_controller.start()
                 break
             
 

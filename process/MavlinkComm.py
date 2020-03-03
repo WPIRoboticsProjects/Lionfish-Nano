@@ -12,6 +12,8 @@ class MavlinkComm(Process):
 
         while True:
             data = self.__mavlink.recv_match()
+            if not data:
+                continue
             message = data.to_dict()
 
             self.__queues.mavlink_nav.put(data)

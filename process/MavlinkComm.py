@@ -21,4 +21,4 @@ class MavlinkComm(Process):
 
                 self.__queues.mavlink_nav.put(message)
                 self.__queues.mavlink_depth.put(message)
-            time.sleep(2)
+            # time.sleep(2)

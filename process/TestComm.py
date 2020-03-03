@@ -9,5 +9,5 @@ class TestComm(Process):
 
     def run(self):
 
-        message = self.__queues.mavlink_nav().get()
+        message = self.__queues.mavlink_nav.get()
         print(message)

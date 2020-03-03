@@ -45,8 +45,8 @@ if __name__=='__main__':
     mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     # Wait a heartbeat before sending commands
     mavlink.wait_heartbeat()
-    serial = serial.Serial('COM3', 115200, timeout=0)
-    arduino = Arduino(serial, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
+    # serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
+    # arduino = Arduino(serial, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     process_queues = ProcessQueue()
     depth_obj = DepthObject('', '')
     drive_obj = DriveObject('', '')

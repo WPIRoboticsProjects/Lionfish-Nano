@@ -48,7 +48,7 @@ class Arduino:
 
     def process_arduino_data(self, message, queues):
         # print("here")
-
+        queues.arduino_test.put(message)
         recvMessage = message.split()
         messType = int(recvMessage[1])
         # 0: ping

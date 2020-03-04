@@ -36,9 +36,10 @@ class NavigateControllerProcess(Process):
 
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now
-            print(last_message[0], new_message[0])
+            # print(last_message[0], new_message[0])
             if not last_message[0] == new_message[0]: # update state if new message
                 state = new_message[0]
+
                 '''
                     throtle:
                     tuple for roomba mode
@@ -50,15 +51,15 @@ class NavigateControllerProcess(Process):
                 desired_amount = new_message[3]  # time or angle
                 original_heading = mavlink_data
                 start_time = time.time()
-                print("start: ", start_time)
+
 
             if state == 'straight':
                 last_message = new_message
                 current_time = time.time()
-                print("current: ", current_time)
+                print(state, start_time, current_time, drive_time)
                 drive_time = current_time - start_time
-                print("drive: ", drive_time)
-                if drive_time <= desired_amount:
+                # print("drive: ", drive_time)
+                if drive_time < desired_amount:
                     self.__nav_obj.drive_straight(throttle, direction)
                 else:
                     self.__nav_obj.clear_motors()

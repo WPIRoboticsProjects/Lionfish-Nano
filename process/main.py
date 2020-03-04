@@ -99,7 +99,7 @@ if __name__=='__main__':
                 msg = ("straight", int(cmd_messages[1]), 1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
 
-            elif cmd_message == 'backward':
+            elif cmd_message == 'reverse':
                 msg = ("straight", int(cmd_messages[1]), -1, float(cmd_messages[2]))
                 process_queues.ui_nav.put(msg)
 

@@ -79,7 +79,9 @@ if __name__=='__main__':
             cmd_message = cmd_messages[0]
 
             if cmd_message == 'disarm':
-                arm = False
+                armed = False
+                disarmed = 1 << 4
+                mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, disarmed)
                 # depth_controller.terminate()
                 nav_controller.terminate()
 

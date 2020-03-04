@@ -66,7 +66,7 @@ if __name__=='__main__':
         if not armed:
             cmd_message = input('please arm the AUV')
             if cmd_message == 'arm':
-                arm = True
+                armed = True
 
                 # depth_controller.start()
                 nav_controller.start()

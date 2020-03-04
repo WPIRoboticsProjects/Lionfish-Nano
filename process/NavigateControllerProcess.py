@@ -11,7 +11,8 @@ class NavigateControllerProcess(Process):
     def run(self):
         minObjectDistance = 2000
         start_time = time.time()
-        last_message = ['']
+        last_message = [' ']
+        new_message = [' ']
         current_heading = 0
         original_heading = current_heading
         state = ''
@@ -19,7 +20,7 @@ class NavigateControllerProcess(Process):
         direction = 0
         desired_amount = 0
         roomba_state = 'straight'
-        new_message = ['']
+
         mavlink_data = 0
         arduino_data = 0
         while True:
@@ -35,6 +36,7 @@ class NavigateControllerProcess(Process):
 
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now
+            print(last_message[0], new_message[0])
             if not last_message[0] == new_message[0]: # update state if new message
                 state = new_message[0]
                 '''
@@ -51,6 +53,7 @@ class NavigateControllerProcess(Process):
                 print("start: ", start_time)
 
             if state == 'straight':
+                last_message = new_message
                 current_time = time.time()
                 print("current: ", current_time)
                 drive_time = current_time - start_time
@@ -59,7 +62,7 @@ class NavigateControllerProcess(Process):
                     self.__nav_obj.drive_straight(throttle, direction)
                 else:
                     self.__nav_obj.clear_motors()
-                    last_message = new_message
+                    # last_message = new_message
                     state = 'stop'
 
             elif state == 'turn':

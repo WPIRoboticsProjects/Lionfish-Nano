@@ -47,7 +47,7 @@ class DriveObject:
         else:
             return True
 
-    def turn(self, throttle, angle, current_header, original_header):
+    def turn(self, throttle, angle):
         # -1: Port
         #  1: Starboard
         direction = np.sign(angle)

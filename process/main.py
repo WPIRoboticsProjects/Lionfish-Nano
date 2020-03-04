@@ -104,7 +104,7 @@ if __name__=='__main__':
                 process_queues.ui_nav.put(msg)
 
             elif cmd_message == 'turn' or cmd_message == 'yaw':
-                msg = ('turn', int(cmd_messages[1]), np.sign(int(cmd_messages[2])), abs(float(cmd_messages[2])))
+                msg = ('turn', int(cmd_messages[1]), np.sign(int(cmd_messages[2])), abs(int(cmd_messages[2])))
                 process_queues.ui_nav.put(msg)
 
             # elif cmd_message == 'roomba':

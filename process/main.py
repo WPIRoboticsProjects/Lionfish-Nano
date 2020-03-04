@@ -120,7 +120,8 @@ if __name__=='__main__':
             elif cmd_message == 'stop':
                 process_queues.ui_nav.put((cmd_message, 0, 0, 0))
                 process_queues.ui_depth.put((cmd_message, 0))
-
+            elif cmd_message == 'reset':
+                drive_obj.clear_motors()
             elif cmd_message == 'help':
                 print("arm - arm the motors")
                 print("disarm - disarm the motors")

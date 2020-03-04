@@ -16,16 +16,17 @@ class ArduinoComms(Process):
         # self.arduino
 
         while True:
-            print(self.arduino)
-            try:
-                message = self.queues.sendToArduino.get()
-                sendMSG(message)
-            except:
-                pass
+            # print(self.arduino)
+            # try:
+            #     message = self.queues.sendToArduino.get()
+            #     sendMSG(message)
+            # except:
+            #     pass
 
             if self.arduino.inWaiting() > 0:
                 try:
                     dataRecvd = self.recv_from_arduino()
+                    print(dataRecvd)
                     # print("Reply Received  " + dataRecvd)
                     self.process_arduino_data(dataRecvd)
                 except:

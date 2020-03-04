@@ -67,7 +67,8 @@ if __name__=='__main__':
             cmd_message = input('please arm the AUV')
             if cmd_message == 'arm':
                 armed = True
-
+                arm = 1 << 6
+                mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, arm)
                 # depth_controller.start()
                 nav_controller.start()
                 harv_controller.start()

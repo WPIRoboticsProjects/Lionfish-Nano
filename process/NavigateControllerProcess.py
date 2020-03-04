@@ -52,7 +52,7 @@ class NavigateControllerProcess(Process):
 
             if state == 'straight':
                 current_time = time.time()
-                # print("current: ", current_time)
+                print("current: ", current_time)
                 drive_time = current_time - start_time
                 print("drive: ", drive_time)
                 if drive_time <= desired_amount:

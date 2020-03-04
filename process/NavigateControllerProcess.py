@@ -62,7 +62,9 @@ class NavigateControllerProcess(Process):
                 if drive_time < desired_amount:
                     self.__nav_obj.drive_straight(throttle, direction)
                 else:
+                    print("Trying to clear motors")
                     self.__nav_obj.clear_motors()
+                    print("cleared motor")
                     # last_message = new_message
                     state = 'stop'
 

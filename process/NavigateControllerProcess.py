@@ -11,7 +11,7 @@ class NavigateControllerProcess(Process):
     def run(self):
         minObjectDistance = 2000
         start_time = time.time()
-        last_message = ''
+        last_message = ['']
         current_heading = 0
         original_heading = current_heading
         state = ''
@@ -19,7 +19,7 @@ class NavigateControllerProcess(Process):
         direction = 0
         desired_amount = 0
         roomba_state = 'straight'
-        new_message = ''
+        new_message = ['']
         mavlink_data = 0
         arduino_data = 0
         while True:

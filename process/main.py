@@ -85,9 +85,7 @@ if __name__=='__main__':
                 # depth_controller.terminate()
 
                 nav_controller.terminate()
-                nav_controller.kill()
                 harv_controller.terminate()
-                harv_controller.kill()
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth':

@@ -48,10 +48,13 @@ class NavigateControllerProcess(Process):
                 desired_amount = new_message[3]  # time or angle
                 original_heading = mavlink_data
                 start_time = time.time()
+                print("start: ", start_time)
 
             if state == 'straight':
                 current_time = time.time()
+                # print("current: ", current_time)
                 drive_time = current_time - start_time
+                print("drive: ", drive_time)
                 if drive_time <= desired_amount:
                     self.__nav_obj.drive_straight(throttle, direction)
                 else:

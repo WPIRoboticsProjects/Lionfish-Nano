@@ -83,11 +83,11 @@ if __name__=='__main__':
                 disarmed = 1 << 4
                 mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, disarmed)
                 # depth_controller.terminate()
-                nav_controller.terminate()
 
-                # todo clean up and make sure harvester is disarmed
-                #  at the arduino before termination
+                nav_controller.terminate()
+                nav_controller.kill()
                 harv_controller.terminate()
+                harv_controller.kill()
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth':

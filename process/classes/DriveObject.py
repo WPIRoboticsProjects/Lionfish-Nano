@@ -4,6 +4,7 @@ class DriveObject:
     def __init__(self, mavlink, turn_buffer):
         self.mavlink = mavlink
         self.turn_buffer = turn_buffer
+        self.original_heading = 0
         # self.msg_handle = msg_handle
 
     def write_pwm(self, output_channel, output_val):
@@ -28,9 +29,9 @@ class DriveObject:
         output = (direction * throttle * 5) + 1500
         self.write_pwm(4, output)
 
-    def continue_turn(self, org_heading, curr_heading, rel_angle):
+    def is_turn_finished(self, curr_heading, rel_angle):
 
-        final_heading = org_heading + rel_angle
+        final_heading = self.org_heading + rel_angle
         if final_heading > 360:
             final_heading -= 360
         if final_heading < 0:

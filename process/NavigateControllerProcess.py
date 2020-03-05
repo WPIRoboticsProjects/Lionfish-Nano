@@ -22,7 +22,7 @@ class NavigateControllerProcess(Process):
         roomba_state = 'straight'
 
         mavlink_data = 0
-        arduino_data = 0
+        arduino_data = (0, 0)
         while True:
             if not self.__queues.ui_nav.empty():
                 new_message = self.__queues.ui_nav.get_nowait()
@@ -31,6 +31,10 @@ class NavigateControllerProcess(Process):
             # todo checksafe to perseerve previous data if no data in queues
             if not self.__queues.mavlink_nav.empty():
                 mavlink_data = self.__queues.mavlink_nav.get_nowait()
+            else:
+                pass
+            if not self.__queues.arduino_nav.empty():
+                mavlink_data = self.__queues.arduino_nav.get_nowait()
             else:
                 pass
 
@@ -52,7 +56,6 @@ class NavigateControllerProcess(Process):
                 original_heading = mavlink_data
                 start_time = time.time()
 
-
             if state == 'straight':
                 last_message = new_message
                 current_time = time.time()
@@ -71,7 +74,7 @@ class NavigateControllerProcess(Process):
             elif state == 'turn':
                 current_heading = mavlink_data
                 desired_rel_angle = direction * desired_amount
-                if self.__nav_obj.continue_turn(original_heading, current_heading, desired_rel_angle):
+                if self.__nav_obj.is_turn_finished(current_heading, desired_rel_angle):
                     self.__nav_obj.turn(throttle, desired_rel_angle)
                 else:
                     last_message = new_message
@@ -88,9 +91,10 @@ class NavigateControllerProcess(Process):
 
                 elif roomba_state == 'turn':
                     current_heading = mavlink_data
+                    print("current heading", current_heading)
                     desired_rel_angle = direction * desired_amount
-                    if(self.__nav_obj.continue_turn(original_heading, current_heading, 100)):
-                        self.__nav_obj.turn(throttle[1], desired_amount)
+                    if(self.__nav_obj.is_turn_finished(current_heading, desired_rel_angle)):
+                        self.__nav_obj.turn(throttle[1], desired_rel_angle)
                     else:
                         self.__nav_obj.clear_motors()
                         roomba_state = 'straight'

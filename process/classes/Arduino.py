@@ -62,7 +62,7 @@ class Arduino:
 
         messData = int(recvMessage[3])
         confData = int(recvMessage[4])
-        print(message)
+        # print(message)
 
         # print("Type: " + str(messType) + ", id: " + str(messId) + ", data: " + str(messData))
         if messType == 0:

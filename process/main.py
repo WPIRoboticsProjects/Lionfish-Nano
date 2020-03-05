@@ -48,7 +48,7 @@ if __name__=='__main__':
     mavlink.wait_heartbeat() # Wait a heartbeat before sending commands
     mavlink_comm = MavlinkComm(mavlink, process_queues)
     mavlink_comm.start()
-    
+
     serial_connection = serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)

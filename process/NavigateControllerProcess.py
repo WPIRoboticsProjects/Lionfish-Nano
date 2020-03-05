@@ -60,7 +60,7 @@ class NavigateControllerProcess(Process):
                 last_message = new_message
                 current_time = time.time()
                 drive_time = current_time - start_time
-                print(state, start_time, current_time, drive_time)
+                # print(state, start_time, current_time, drive_time)
 
                 if drive_time < desired_amount:
                     self.__nav_obj.drive_straight(throttle, direction)

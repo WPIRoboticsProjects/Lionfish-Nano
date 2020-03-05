@@ -31,7 +31,7 @@ class DriveObject:
 
     def is_turn_finished(self, curr_heading, rel_angle):
 
-        final_heading = self.org_heading + rel_angle
+        final_heading = self.original_heading + rel_angle
         if final_heading > 360:
             final_heading -= 360
         if final_heading < 0:

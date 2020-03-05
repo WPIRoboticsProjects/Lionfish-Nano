@@ -53,7 +53,7 @@ class NavigateControllerProcess(Process):
                 throttle = new_message[1]
                 direction = new_message[2]
                 desired_amount = new_message[3]  # time or angle
-                self.nav_objoriginal_heading = mavlink_data
+                original_heading = mavlink_data
                 start_time = time.time()
 
             if state == 'straight':

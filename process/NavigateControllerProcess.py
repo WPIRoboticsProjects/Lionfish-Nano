@@ -34,7 +34,7 @@ class NavigateControllerProcess(Process):
             else:
                 pass
             if not self.__queues.arduino_nav.empty():
-                mavlink_data = self.__queues.arduino_nav.get_nowait()
+                arduino_data = self.__queues.arduino_nav.get_nowait()
             else:
                 pass
 
@@ -73,7 +73,7 @@ class NavigateControllerProcess(Process):
 
             elif state == 'turn':
                 current_heading = mavlink_data
-
+                print(current_heading)
                 desired_rel_angle = direction * desired_amount
                 if self.__nav_obj.is_turn_finished(current_heading, desired_rel_angle):
                     self.__nav_obj.turn(throttle, desired_rel_angle)

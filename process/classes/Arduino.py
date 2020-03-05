@@ -12,6 +12,13 @@ class Arduino:
 
         pass
 
+    def sendMSG(self, message):
+        if type(message) == 'char':
+            self.__serial.write(message).encode('utf-8')
+        else:
+            #wrong data type
+            pass
+
     def is_waiting(self):
         return self.__serial.inWaiting()
 

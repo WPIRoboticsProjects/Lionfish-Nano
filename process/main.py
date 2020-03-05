@@ -47,10 +47,12 @@ if __name__=='__main__':
     mavlink = mavutil.mavlink_connection('udpin:0.0.0.0:15000')
     mavlink.wait_heartbeat() # Wait a heartbeat before sending commands
     mavlink_comm = MavlinkComm(mavlink, process_queues)
-
+    mavlink_comm.start()
+    
     serial_connection = serial.Serial("/dev/serial/by-path/platform-70090000.xusb-usb-0:2.2:1.0", 115200, timeout=0)
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)
+    arduino_comm.start()
     test_comm = TestComm(process_queues)
     # depth_obj = DepthObject('', '')
     # depth_controller = DepthControllerProcess(depth_obj, process_queues)

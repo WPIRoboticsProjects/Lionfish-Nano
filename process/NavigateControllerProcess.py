@@ -75,7 +75,7 @@ class NavigateControllerProcess(Process):
                 current_heading = mavlink_data
                 # print(current_heading)
                 desired_rel_angle = direction * desired_amount
-                if self.nav_obj.is_turn_finished(current_heading, desired_rel_angle):
+                if self.nav_obj.is_turn_finished(original_heading, current_heading):
                     print(throttle)
                     self.nav_obj.turn(throttle, desired_rel_angle)
                 else:

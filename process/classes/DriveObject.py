@@ -48,6 +48,7 @@ class DriveObject:
         if abs(final_heading - current_heading) < self.turn_buffer:
             return False
         else:
+            print(True)
             return True
 
     def turn(self, throttle, angle):

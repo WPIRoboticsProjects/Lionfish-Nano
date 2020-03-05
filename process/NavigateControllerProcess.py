@@ -73,7 +73,7 @@ class NavigateControllerProcess(Process):
 
             elif state == 'turn':
                 current_heading = mavlink_data
-                print(current_heading)
+                # print(current_heading)
                 desired_rel_angle = direction * desired_amount
                 if self.nav_obj.is_turn_finished(current_heading, desired_rel_angle):
                     self.nav_obj.turn(throttle, desired_rel_angle)
@@ -92,7 +92,7 @@ class NavigateControllerProcess(Process):
 
                 elif roomba_state == 'turn':
                     current_heading = mavlink_data
-                    print("current heading", current_heading)
+                    # print("current heading", current_heading)
                     desired_rel_angle = direction * desired_amount
                     if(self.nav_obj.is_turn_finished(current_heading, desired_rel_angle)):
                         self.nav_obj.turn(throttle[1], desired_rel_angle)

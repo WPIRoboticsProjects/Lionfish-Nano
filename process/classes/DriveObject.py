@@ -56,5 +56,5 @@ class DriveObject:
         #  1: Starboard
         direction = np.sign(angle)
         output = (direction*throttle * 5) + 1500
-
+        print(output)
         self.write_pwm(3, output)

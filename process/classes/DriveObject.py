@@ -29,21 +29,23 @@ class DriveObject:
         output = (direction * throttle * 5) + 1500
         self.write_pwm(4, output)
 
-    def is_turn_finished(self, curr_heading, rel_angle):
+    def is_turn_finished(self, current_heading, rel_angle):
 
         final_heading = self.original_heading + rel_angle
+        print("current heading", current_heading)
+        print("final_heading", final_heading)
         if final_heading > 360:
             final_heading -= 360
         if final_heading < 0:
             final_heading += 360
 
         if (final_heading + self.turn_buffer) > 360:
-            if abs(final_heading - 360 - curr_heading) < self.turn_buffer:
+            if abs(final_heading - 360 - current_heading) < self.turn_buffer:
                 return False
         if (final_heading - self.turn_buffer) < 0:
-            if abs(final_heading + 360 - curr_heading) < self.turn_buffer:
+            if abs(final_heading + 360 - current_heading) < self.turn_buffer:
                 return False
-        if abs(final_heading - curr_heading) < self.turn_buffer:
+        if abs(final_heading - current_heading) < self.turn_buffer:
             return False
         else:
             return True

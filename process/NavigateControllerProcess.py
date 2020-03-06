@@ -19,7 +19,7 @@ class NavigateControllerProcess(Process):
         throttle = 0
         direction = 0
         desired_amount = 0
-        roomba_state = 'straight'
+        roomba_state = 'turn'
 
         mavlink_data = 0
         arduino_data = (0, 0)

@@ -27,6 +27,8 @@ imgpoints_r = [] # 2d points in image plane.
 #images_r = glob.glob('calibration_photos_stereo_test/right/*.png')
 directory = 'calibration_photos_stereo_test/left/'
 directory2 = 'calibration_photos_stereo_test/right/'
+#directory = 'calibration_photos_stereo_water_test/left/'
+#directory2 = 'calibration_photos_stereo_water_test/right/'
 for filename in os.listdir(directory):
     img_l = cv.imread(os.path.join(directory, filename))
     img_r = cv.imread(os.path.join(directory2, filename))
@@ -55,7 +57,7 @@ for filename in os.listdir(directory):
         img_r_show = cv.drawChessboardCorners(img_r, (9, 6), corners2_r, ret_r)
         #cv.imshow('img_l', img_l_show)
         #cv.imshow('img_r', img_r_show)
-        #cv.waitKey(500)
+        #cv.waitKey(2000)
 
 cv.destroyAllWindows()
 
@@ -107,6 +109,19 @@ rightMapX, rightMapY = cv.initUndistortRectifyMap(rightMatrix, rightDistortion, 
 #)
 
 # pretty good values
+stereo = cv.StereoSGBM_create(
+    minDisparity = 0, #min_disp
+    numDisparities = 128, #112, #128, #num_disp,
+    blockSize = 1, #1, #5, #7, #9, # 16
+    P1 = 10, #100, #8*3*window_size**2,
+    P2 = 200, #800, #960, #32*3*window_size**2,
+    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
+    uniquenessRatio = 0, #3, #10,
+    speckleWindowSize = 10, #100,
+    speckleRange = 5 #9 #32
+)
+
+# best out of water calibration
 #stereo = cv.StereoSGBM_create(
 #    minDisparity = 0, #min_disp
 #    numDisparities = 128, #112, #128, #num_disp,
@@ -118,18 +133,6 @@ rightMapX, rightMapY = cv.initUndistortRectifyMap(rightMatrix, rightDistortion, 
 #    speckleWindowSize = 20, #100,
 #    speckleRange = 5 #9 #32
 #)
-
-stereo = cv.StereoSGBM_create(
-    minDisparity = 0, #min_disp
-    numDisparities = 128, #112, #128, #num_disp,
-    blockSize = 1, #1, #5, #7, #9, # 16
-    P1 = 10, #100, #8*3*window_size**2,
-    P2 = 200, #800, #960, #32*3*window_size**2,
-    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
-    uniquenessRatio = 0, #3, #10,
-    speckleWindowSize = 20, #100,
-    speckleRange = 5 #9 #32
-)
 
 #stereo = cv.StereoSGBM_create(0, 96, 18)
 

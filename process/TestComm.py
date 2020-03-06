@@ -15,4 +15,3 @@ class TestComm(Process):
                 arduino = self.__queues.arduino_test.get()
                 mavlink = self.__queues.mavlink_test.get()
                 print(arduino)
-                print(mavlink)

@@ -17,7 +17,7 @@ class NavigateControllerProcess(Process):
         original_heading = current_heading
         state = ''
         throttle = 0
-        direction = 0
+        direction = 0d, an optional co
         desired_amount = 0
         roomba_state = 'straight'
 

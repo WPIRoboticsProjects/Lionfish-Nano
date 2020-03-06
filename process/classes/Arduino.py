@@ -55,7 +55,7 @@ class Arduino:
 
     def process_arduino_data(self, message, queues):
         # print("here")
-        queues.arduino_test.put(message)
+
         recvMessage = message.split()
         messType = int(recvMessage[1])
         # 0: ping
@@ -74,6 +74,7 @@ class Arduino:
         # print("Type: " + str(messType) + ", id: " + str(messId) + ", data: " + str(messData))
         if messType == 0:
             if messId == 1:
+                queues.arduino_test.put((messData, confData))
                 queues.arduino_nav.put((messData, confData))
             elif messId == 2:
                 queues.arduino_depth.put((messData, confData))

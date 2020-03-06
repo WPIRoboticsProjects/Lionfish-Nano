@@ -48,7 +48,6 @@ class DriveObject:
         if abs(final_heading - current_heading) < self.turn_buffer:
             return False
         else:
-            print(True)
             return True
 
     def turn(self, throttle, angle):
@@ -56,5 +55,5 @@ class DriveObject:
         #  1: Starboard
         direction = np.sign(angle)
         output = (direction*throttle * 5) + 1500
-        print(output)
+
         self.write_pwm(3, output)

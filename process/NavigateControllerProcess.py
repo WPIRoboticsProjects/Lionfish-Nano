@@ -89,6 +89,7 @@ class NavigateControllerProcess(Process):
                         self.nav_obj.drive_straight(throttle[0], 1)
                     else:
                         self.nav_obj.clear_motors()
+                        original_heading = mavlink_data
                         time.sleep(2)
                         roomba_state = 'turn'
 

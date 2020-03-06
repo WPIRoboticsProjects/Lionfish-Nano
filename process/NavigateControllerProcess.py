@@ -14,7 +14,7 @@ class NavigateControllerProcess(Process):
         last_message = [' ']
         new_message = [' ']
         current_heading = 0
-        original_heading = current_heading
+        original_heading = 0
         state = ''
         throttle = 0
         direction = 0
@@ -76,7 +76,6 @@ class NavigateControllerProcess(Process):
                 # print(current_heading)
                 desired_rel_angle = direction * desired_amount
                 if self.nav_obj.is_turn_finished(original_heading, current_heading, desired_rel_angle):
-                    print(throttle)
                     self.nav_obj.turn(throttle, desired_rel_angle)
                 else:
                     last_message = new_message

@@ -53,8 +53,8 @@ if __name__=='__main__':
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)
     arduino_comm.start()
-    # test_comm = TestComm(process_queues)
-    # test_comm.start()
+    test_comm = TestComm(process_queues)
+    test_comm.start()
     # depth_obj = DepthObject('', '')
     # depth_controller = DepthControllerProcess(depth_obj, process_queues)
 
@@ -110,9 +110,9 @@ if __name__=='__main__':
                 msg = ('turn', int(cmd_messages[1]), np.sign(int(cmd_messages[2])), abs(int(cmd_messages[2])))
                 process_queues.ui_nav.put(msg)
 
-            # elif cmd_message == 'roomba':
-            #     msg = (cmd_messages, float(cmd_messages[1]), 1, float(cmd_messages[2]))
-            #     process_queues.ui_nav.put(msg)
+            elif cmd_message == 'roomba':
+                msg = (cmd_message, (20, 15), 1, 90)
+                process_queues.ui_nav.put(msg)
             # elif cmd_message == 'run mission':
             #     depth_msg = ("bottom_hold", float(1.5))
             #     nav_msg = ("roomba", float(30), 1, float(10000))

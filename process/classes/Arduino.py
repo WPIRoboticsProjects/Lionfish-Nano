@@ -73,10 +73,10 @@ class Arduino:
 
         # print("Type: " + str(messType) + ", id: " + str(messId) + ", data: " + str(messData))
         if messType == 0:
-            if messId == 1:
+            if messId == 2:
                 queues.arduino_test.put((messData, confData))
                 queues.arduino_nav.put((messData, confData))
-            elif messId == 2:
+            elif messId == 1:
                 queues.arduino_depth.put((messData, confData))
             # ping sensor update
             # qFromArduino # send received data to jetson

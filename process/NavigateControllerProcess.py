@@ -85,21 +85,23 @@ class NavigateControllerProcess(Process):
 
             elif state == 'roomba':
                 if roomba_state == 'straight':
-                    if(arduino_data[0] > minObjectDistance):
+                    if(arduino_data[0] > minObjectDistance or arduino_data[1] < 90):
                         self.nav_obj.drive_straight(throttle[0], 1)
                     else:
                         self.nav_obj.clear_motors()
                         roomba_state = 'turn'
+                        time.sleep(2)
 
                 elif roomba_state == 'turn':
                     current_heading = mavlink_data
                     # print("current heading", current_heading)
-                    print("desired angle", desired_amount)
+#                    print("desired angle", desired_amount)
                     desired_rel_angle = direction * desired_amount
-                    if(self.nav_obj.is_turn_finished(current_heading, desired_rel_angle)):
+                    if(self.nav_obj.is_turn_finished(original_heading, current_heading, desired_rel_angle)):
                         self.nav_obj.turn(throttle[1], desired_rel_angle)
                     else:
                         self.nav_obj.clear_motors()
+                        time.sleep(2)
                         roomba_state = 'straight'
                 else:
                     pass

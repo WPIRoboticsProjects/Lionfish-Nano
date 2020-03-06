@@ -89,6 +89,7 @@ class NavigateControllerProcess(Process):
                         self.nav_obj.drive_straight(throttle[0], 1)
                     else:
                         self.nav_obj.clear_motors()
+                        time.sleep(2)
                         roomba_state = 'turn'
 
                 elif roomba_state == 'turn':
@@ -100,6 +101,7 @@ class NavigateControllerProcess(Process):
                         self.nav_obj.turn(throttle[1], desired_rel_angle)
                     else:
                         self.nav_obj.clear_motors()
+                        time.sleep(2)
                         roomba_state = 'straight'
                 else:
                     pass

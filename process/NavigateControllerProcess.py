@@ -91,7 +91,6 @@ class NavigateControllerProcess(Process):
                         self.nav_obj.clear_motors()
                         time.sleep(2)
                         roomba_state = 'turn'
-                        time.sleep(2)
 
                 elif roomba_state == 'turn':
                     current_heading = mavlink_data

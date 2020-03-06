@@ -53,8 +53,8 @@ if __name__=='__main__':
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)
     arduino_comm.start()
-    test_comm = TestComm(process_queues)
-    test_comm.start()
+    # test_comm = TestComm(process_queues)
+    # test_comm.start()
     # depth_obj = DepthObject('', '')
     # depth_controller = DepthControllerProcess(depth_obj, process_queues)
 

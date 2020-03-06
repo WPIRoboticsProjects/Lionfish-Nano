@@ -8,44 +8,49 @@ class DepthControllerProcess(Process):
         self.__queues = queues
 
     def run(self):
-
+        state = 'stop'
+        mavlink_data = 0
+        arduino_data = (0, 0)
         while True:
             buffer = 200#mm
+            bottom_buffer = 2000
             throttle = 30
             desired_depth = 0
             # message will be a tuple,
             # bottom_hold or depth, depth value
-            message = self.__queues.ui_depth.get_nowait()
-            arduino_data = self.__queues.arduino_depth.get_nowait()
-            print(message)
-            state = message[0]
-            uiData = message[1] #depth => depth and bottom_hold => distance from bottom to hold
-
-            mavlink_data = self.__mavlink.recv_match()
-            if not mavlink_data:
+            if not self.__queues.ui_depth.empty():
+                message = self.__queues.ui_depth.get_nowait()
+                state = message[0]
+                desired_depth = message[1]  # depth => depth and bottom_hold => distance from bottom to hold
+            else:
                 pass
-            elif mavlink_data.get_type() == 'VFR_HUD':
-                altitude = mavlink_data.to_dict()['alt']#auv's depth reading
+            if not self.__queues.arduino_depth.empty():
+                mavlink_data = self.__queues.mavlink_depth.get_nowait()
+            else:
+                pass
+            if not self.__queues.arduino_depth.empty():
+                arduino_data = self.__queues.arduino_depth.get_nowait()
             else:
                 pass
 
-
-            if state == 'bottom_hold':
-                diff = sensors[2] - uiData*1000#mm - m * 1000
-                if diff > abs(buffer):#need to adjust
-                    if diff > 0:#too high
-                        self.__depth_obj.depth_test(throttle, desired_depth - diff, altitude)
-                    elif diff < 0:# too low
-                        self.__depth_obj.depth_test(throttle, desired_depth - diff, altitude)
-                    else:#error catching
-                        pass
-                else:#no need to adjust
-                    pass
-
-            elif state == 'dive':
-                desired_depth = uiData
-                diff = altitude - desired_depth
+            if state == 'dive':
+                current_depth = mavlink_data
+                diff = current_depth - desired_depth
                 if abs(diff) > buffer:
-                        self.__depth_obj.depth_test(throttle, desired_depth, altitude)
+                        self.__depth_obj.decend(throttle, desired_depth, current_depth)
                 else:
-                    pass
+                    self.__depth_obj.clear_motors()
+                    state ='stop'
+
+            elif state == 'bottom_hold':
+                current_depth = mavlink_data
+                ping_distance = arduino_data[0]
+                if (ping_distance < bottom_buffer and arduino_data[1] > 90):
+                    self.__depth_obj.decend(throttle, (current_depth + (bottom_buffer - ping_distance)), current_depth)
+
+                else:
+                    self.__depth_obj.clear_motors()
+                pass
+            elif state == 'stop':
+                self.__depth_obj.clear_motors()
+                pass

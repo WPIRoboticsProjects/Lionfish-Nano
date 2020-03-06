@@ -91,10 +91,13 @@ if __name__=='__main__':
                 harv_controller.terminate()
                 print('**AUV Disarmed**')
 
+            if cmd_message == 'depth_hold':
+                hold = 1 << 2
+                mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, hold)
             if cmd_message == 'depth':
                 msg = (cmd_message, 0)
                 process_queues.ui_depth.put(msg)
-            elif cmd_message == 'dive' or cmd_message == 'bottom_hold':
+            elif cmd_message == 'bottom_hold':
                 msg = (cmd_message, float(cmd_messages[1]))
                 process_queues.ui_depth.put(msg)
 

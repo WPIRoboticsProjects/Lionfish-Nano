@@ -22,13 +22,14 @@ class DepthObject:
             *rc_channel_values)
 
        # to certain distance
-    def depth_test(self, throttle, target_depth, currentDepth):
-        if 0 < throttle <= 100:
-            diff = target_depth - currentDepth
-            if diff < 0: #too high 
-                output = (-throttle * 5) + 1500#go down
-            elif diff > 0:# too low
-                output = (throttle * 5) + 1500#go up
-            self.write_pwm( 2, output)
-        elif throttle == 0:
-            self.write_pwm(2, 0)
+    def decend(self, throttle, target_depth, current_depth):
+        output = 0
+        diff = target_depth - current_depth
+        if diff < 0: #too high
+            output = (-throttle * 5) + 1500 # go down
+        elif diff > 0: # too low
+            output = (throttle * 5) + 1500  #go up
+        elif diff == 0:
+            pass
+        self.write_pwm(2, output)
+

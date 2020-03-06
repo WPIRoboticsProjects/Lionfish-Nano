@@ -92,8 +92,18 @@ if __name__=='__main__':
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth_hold':
-                hold = 1 << 2
-                mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, hold)
+                mode = 'DEPTH'
+                mode_id = mavlink.mode_mapping()[mode]
+                # Set new mode
+                # master.mav.command_long_send(
+                #    master.target_system, master.target_component,
+                #    mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0,
+                #    0, mode_id, 0, 0, 0, 0, 0) or:
+                # master.set_mode(mode_id) or:
+                mavlink.mav.set_mode_send(
+                    mavlink.target_system,
+                    mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+                    mode_id)
             if cmd_message == 'depth':
                 msg = (cmd_message, 0)
                 process_queues.ui_depth.put(msg)

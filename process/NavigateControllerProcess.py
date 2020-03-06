@@ -14,7 +14,7 @@ class NavigateControllerProcess(Process):
         last_message = [' ']
         new_message = [' ']
         current_heading = 0
-        original_heading = 0
+        original_heading = current_heading
         state = ''
         throttle = 0
         direction = 0
@@ -26,6 +26,19 @@ class NavigateControllerProcess(Process):
         while True:
             if not self.__queues.ui_nav.empty():
                 new_message = self.__queues.ui_nav.get_nowait()
+                state = new_message[0]
+
+                '''
+                    throtle:
+                    tuple for roomba mode
+                    index 0: straight
+                    index 1: turn
+                '''
+                throttle = new_message[1]
+                direction = new_message[2]
+                desired_amount = new_message[3]  # time or angle
+                original_heading = mavlink_data
+                start_time = time.time()
             else:
                 pass
             # todo checksafe to perseerve previous data if no data in queues
@@ -41,20 +54,8 @@ class NavigateControllerProcess(Process):
             # todo: make better standard messages for cmd passing and such,
             #  tuples for now
             # print(last_message[0], new_message[0])
-            if not last_message[0] == new_message[0]: # update state if new message
-                state = new_message[0]
-
-                '''
-                    throtle:
-                    tuple for roomba mode
-                    index 0: straight
-                    index 1: turn
-                '''
-                throttle = new_message[1]
-                direction = new_message[2]
-                desired_amount = new_message[3]  # time or angle
-                original_heading = mavlink_data
-                start_time = time.time()
+            # if not last_message[0] == new_message[0]: # update state if new message
+                
 
             if state == 'straight':
                 last_message = new_message
@@ -65,9 +66,9 @@ class NavigateControllerProcess(Process):
                 if drive_time < desired_amount:
                     self.nav_obj.drive_straight(throttle, direction)
                 else:
-                    # print("Trying to clear motors")
+                    print("Trying to clear motors")
                     self.nav_obj.clear_motors()
-                    # print("cleared motor")
+                    print("cleared motor")
                     # last_message = new_message
                     state = 'stop'
 
@@ -76,6 +77,7 @@ class NavigateControllerProcess(Process):
                 # print(current_heading)
                 desired_rel_angle = direction * desired_amount
                 if self.nav_obj.is_turn_finished(original_heading, current_heading, desired_rel_angle):
+                    print(throttle)
                     self.nav_obj.turn(throttle, desired_rel_angle)
                 else:
                     last_message = new_message

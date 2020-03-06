@@ -42,6 +42,7 @@ class NavigateControllerProcess(Process):
             #  tuples for now
             # print(last_message[0], new_message[0])
             if not last_message[0] == new_message[0]: # update state if new message
+                print("newstate")
                 state = new_message[0]
 
                 '''
@@ -72,13 +73,14 @@ class NavigateControllerProcess(Process):
                     state = 'stop'
 
             elif state == 'turn':
+                last_message = new_message
                 current_heading = mavlink_data
                 # print(current_heading)
+#                print(original_heading)
                 desired_rel_angle = direction * desired_amount
                 if self.nav_obj.is_turn_finished(original_heading, current_heading, desired_rel_angle):
                     self.nav_obj.turn(throttle, desired_rel_angle)
                 else:
-                    last_message = new_message
                     self.nav_obj.clear_motors()
                     state = 'stop'
 
@@ -93,6 +95,7 @@ class NavigateControllerProcess(Process):
                 elif roomba_state == 'turn':
                     current_heading = mavlink_data
                     # print("current heading", current_heading)
+                    print("desired angle", desired_amount)
                     desired_rel_angle = direction * desired_amount
                     if(self.nav_obj.is_turn_finished(current_heading, desired_rel_angle)):
                         self.nav_obj.turn(throttle[1], desired_rel_angle)

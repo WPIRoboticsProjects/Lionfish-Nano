@@ -92,7 +92,7 @@ if __name__=='__main__':
                 print('**AUV Disarmed**')
 
             if cmd_message == 'depth_hold':
-                mode = 'DEPTH'
+                mode = 'DEPTH HOLD'
                 mode_id = mavlink.mode_mapping()[mode]
                 # Set new mode
                 # master.mav.command_long_send(

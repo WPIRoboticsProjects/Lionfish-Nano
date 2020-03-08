@@ -35,7 +35,9 @@ class DepthControllerProcess(Process):
 
             if state == 'dive':
                 current_depth = mavlink_data
+
                 diff = current_depth - desired_depth
+                .7
                 if abs(diff) > buffer:
                         self.__depth_obj.decend(throttle, desired_depth, current_depth)
                 else:

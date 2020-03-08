@@ -53,10 +53,10 @@ if __name__=='__main__':
     arduino = Arduino(serial_connection, PING_FORWARD_STOP, PING_EXPIRE_TIME, PING_CONF)
     arduino_comm = ArduinoComm(arduino, process_queues)
     arduino_comm.start()
-    test_comm = TestComm(process_queues)
-    test_comm.start()
-    # depth_obj = DepthObject('', '')
-    # depth_controller = DepthControllerProcess(depth_obj, process_queues)
+#    test_comm = TestComm(process_queues)
+#    test_comm.start()
+    depth_obj = DepthObject(mavlink, 0)
+    depth_controller = DepthControllerProcess(depth_obj, process_queues)
 
     drive_obj = DriveObject(mavlink, TURN_BUFFER)
     nav_controller = NavigateControllerProcess(drive_obj, process_queues)
@@ -72,7 +72,7 @@ if __name__=='__main__':
                 armed = True
                 arm = 1 << 6
                 mavlink.mav.manual_control_send(mavlink.target_system, 0, 0, 0, 0, arm)
-                # depth_controller.start()
+                depth_controller.start()
                 nav_controller.start()
                 harv_controller.start()
                 print('**AUV Armed**')
@@ -104,8 +104,9 @@ if __name__=='__main__':
                     mavlink.target_system,
                     mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
                     mode_id)
-            if cmd_message == 'depth':
-                msg = (cmd_message, 0)
+            if cmd_message == 'dive':
+                msg = (cmd_message, int(cmd_messages[1]))
+                print("main", msg)
                 process_queues.ui_depth.put(msg)
             elif cmd_message == 'bottom_hold':
                 msg = (cmd_message, float(cmd_messages[1]))

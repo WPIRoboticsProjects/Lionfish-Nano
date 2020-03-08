@@ -15,7 +15,7 @@ class DepthObject:
             *rc_channel_values)
 
     def clear_motors(self):
-        rc_channel_values = [0 for _ in range(8)]
+        rc_channel_values = [65535 for _ in range(8)]
         self.mavlink.mav.rc_channels_override_send(
             self.mavlink.target_system,  # target_system
             self.mavlink.target_component,  # target_component

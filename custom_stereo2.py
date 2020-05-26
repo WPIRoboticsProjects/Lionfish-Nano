@@ -23,12 +23,9 @@ objpoints = [] # 3d point in real world space
 imgpoints_l = [] # 2d points in image plane.
 imgpoints_r = [] # 2d points in image plane.
 
-#images_l = glob.glob('calibration_photos_stereo_test/left/*.png')
-#images_r = glob.glob('calibration_photos_stereo_test/right/*.png')
 directory = 'calibration_photos_stereo_test/left/'
 directory2 = 'calibration_photos_stereo_test/right/'
-#directory = 'calibration_photos_stereo_water_test/left/'
-#directory2 = 'calibration_photos_stereo_water_test/right/'
+
 for filename in os.listdir(directory):
     img_l = cv.imread(os.path.join(directory, filename))
     img_r = cv.imread(os.path.join(directory2, filename))
@@ -77,64 +74,18 @@ rightMapX, rightMapY = cv.initUndistortRectifyMap(rightMatrix, rightDistortion, 
 #----------------------------------------------------
 # show disparity
 
-
-#window_size = 25#4
-#min_disp = 0#16 #32#-64 #16
-#num_disp = 112-min_disp
-#num_disp = 128-min_disp
-#num_disp = 144-min_disp
-#stereo = cv.StereoSGBM_create(
-#    minDisparity = 0, #min_disp
-#    numDisparities = 96, #128, #num_disp,
-#    blockSize = 5, #1, #5, #7, #9, # 16
-#    P1 = 0, #8*3*window_size**2,
-#    P2 = 0, #960, #32*3*window_size**2,
-#    disp12MaxDiff = 83, #30, #7, #10, #1,
-#    uniquenessRatio = 0, #10,
-#    speckleWindowSize = 0, #100,
-#    speckleRange = 0 #9 #32
-#)
-
-
-#stereo = cv.StereoSGBM_create(
-#    minDisparity = 0, #min_disp
-#    numDisparities = 96, #128, #num_disp,
-#    blockSize = 1, #1, #5, #7, #9, # 16
-#    P1 = 0, #100, #8*3*window_size**2,
-#    P2 = 0, #800, #960, #32*3*window_size**2,
-#    disp12MaxDiff = 0, #60, #83, #30, #7, #10, #1,
-#    uniquenessRatio = 0, #3, #10,
-#    speckleWindowSize = 0, #100,
-#    speckleRange = 0 #9 #32
-#)
-
-# pretty good values
-stereo = cv.StereoSGBM_create(
-    minDisparity = 0, #min_disp
-    numDisparities = 128, #112, #128, #num_disp,
-    blockSize = 1, #1, #5, #7, #9, # 16
-    P1 = 10, #100, #8*3*window_size**2,
-    P2 = 200, #800, #960, #32*3*window_size**2,
-    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
-    uniquenessRatio = 0, #3, #10,
-    speckleWindowSize = 10, #100,
-    speckleRange = 5 #9 #32
-)
-
 # best out of water calibration
-#stereo = cv.StereoSGBM_create(
-#    minDisparity = 0, #min_disp
-#    numDisparities = 128, #112, #128, #num_disp,
-#    blockSize = 1, #1, #5, #7, #9, # 16
-#    P1 = 10, #100, #8*3*window_size**2,
-#    P2 = 200, #800, #960, #32*3*window_size**2,
-#    disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
-#    uniquenessRatio = 0, #3, #10,
-#    speckleWindowSize = 20, #100,
-#    speckleRange = 5 #9 #32
-#)
-
-#stereo = cv.StereoSGBM_create(0, 96, 18)
+stereo = cv.StereoSGBM_create(
+   minDisparity = 0, #min_disp
+   numDisparities = 128, #112, #128, #num_disp,
+   blockSize = 1, #1, #5, #7, #9, # 16
+   P1 = 10, #100, #8*3*window_size**2,
+   P2 = 200, #800, #960, #32*3*window_size**2,
+   disp12MaxDiff = 5, #60, #83, #30, #7, #10, #1,
+   uniquenessRatio = 0, #3, #10,
+   speckleWindowSize = 20, #100,
+   speckleRange = 5 #9 #32
+)
 
 while True:
     val, l_img = left.read()
@@ -160,9 +111,7 @@ while True:
     print(out_val)
     # focal length = 2.97 mm
     # baseline = 437 mm 
-    #calc_val = (437*2.97/3.0) / out_val
-    calc_val = (437.0 * 190.68) / out_val
-    print("disp: " + str(out_val) + " calc(mm): " + str(calc_val))
+
     # (xmin,ymin),(xmax,ymax)
     xmin = 235 #160 + 80 - 5
     xmax = 245 #xmin + 10
@@ -171,8 +120,6 @@ while True:
     cv.rectangle(disparity, (xmin,ymin),(xmax,ymax), (255,255,255))
     # cv.imshow("Normalized Disparity", (disparity / 16.0 - 0) / 128)
     cv.imshow("Normalized Disparity", disparity)
-
-
 
 left.release()
 right.release()

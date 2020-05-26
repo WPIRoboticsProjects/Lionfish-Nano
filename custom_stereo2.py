@@ -86,6 +86,7 @@ stereo = cv.StereoSGBM_create(
    speckleWindowSize = 20, #100,
    speckleRange = 5 #9 #32
 )
+# need to calibrate for water
 
 while True:
     val, l_img = left.read()
